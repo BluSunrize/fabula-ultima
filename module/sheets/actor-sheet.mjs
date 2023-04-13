@@ -555,6 +555,23 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    html.find('.class-level-sub').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("classId"));
+      const level = item.data.data.level;
+      if (level > 1)
+        await item.update({
+          "system.level": level - 1
+        });
+    });
+    html.find('.class-level-add').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("classId"));
+      await item.update({
+        "system.level": item.data.data.level + 1
+      });
+    });
+
     html.find('[name="bond.who"]').change(async ev => {
       ev.preventDefault();
       const li = $(ev.currentTarget).parents(".item");

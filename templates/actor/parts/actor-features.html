@@ -8,7 +8,11 @@
         </div>
         {{charClass.name}}
       </div>
-      <div class="item-name">{{localize "FABULAULTIMA.Level"}}: {{charClass.system.level}}</div>
+      <div class="item-name">
+        <a class="item-control class-level-sub" title="Reduce Level"><i class="fas fa-circle-minus"></i></a>
+        <span style="margin-left: 5px; margin-right: 5px;">{{localize "FABULAULTIMA.Level"}}: {{charClass.system.level}}</span>
+        <a class="item-control class-level-add" title="Increase Level"><i class="fas fa-circle-plus"></i></a>
+      </div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control class-delete" title="{{localize 'FABULAULTIMA.DeleteClass'}}" data-type="class"><i class="fas fa-trash"></i> {{localize "FABULAULTIMA.DeleteClass"}}</a>
