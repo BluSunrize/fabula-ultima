@@ -13,7 +13,8 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       template: "systems/fabulaultima/templates/actor/actor-sheet.html",
       width: 600,
       height: 600,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }],
+      dragDrop: [{ dragSelector: '.items-list .item', dropSelector: '.sheet-body' }],
     });
   }
 
@@ -595,6 +596,45 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     }
   }
 
+  /** @override */
+  async _onDropItem(event, data) {
+    const item = await Item.implementation.fromDropData(data);
+    const other = this.actor.items.filter(i => i.name === item.name);
+    const sameActor = this.actor.uuid === item.parent?.uuid;
+
+    if (item.type === "class" && other.length > 0 && !sameActor) {
+      // increment level if same class exists
+      other[0].update({
+        "system.level": other[0].data.data.level + 1
+      });
+    } else if (item.type === "feature" && other.length > 0 && !sameActor) {
+      // increment level if same feature exists
+      other[0].update({
+        "system.level": other[0].data.data.level + 1
+      });
+    } else {
+      // this is a re-implementation of vanilla logic which differentiates
+      // between moving and copying items
+      const isCopying = event.ctrlKey;
+      if (!this.actor.isOwner)
+        return false;
+      const itemData = item.toObject();
+
+      // Handle item sorting within the same Actor, unless copying
+      if (sameActor && !isCopying)
+        return this._onSortItem(event, itemData);
+
+      // Create new item
+      const newItem = this._onDropItemCreate(itemData);
+      // If the item comes from a different actor (it must have a parent!)
+      // and this is not a copying operation, then delete the original
+      if (!sameActor && item.parent && !isCopying) {
+        await item.delete();
+      }
+      return ret;
+    }
+  }
+
   /**
    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
    * @param {Event} event   The originating click event
@@ -656,48 +696,5 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       });
       return roll;
     }*/
-  }
-
-  /** @override */
-  async _onDrop(event) {
-    event.preventDefault();
-
-    let data;
-    try {
-      data = JSON.parse(event.dataTransfer.getData("text/plain"));
-    } catch (err) {
-      return false;
-    }
-
-    if (this.actor.data.type === "character") {
-      return this._onDropCharacter(event, data);
-    }
-    return super._onDrop(event);
-  }
-
-  _onDropCharacter(event, data) {
-    const item = game.items.get(data["uuid"].replace("Item.", ""));
-    const other = this.actor.items.filter(i => i.name === item.name);
-    if (item.type === "class") {
-      if (other.length === 0) {
-        return super._onDrop(event);
-      } else {
-        other[0].update({
-          "system.level": other[0].data.data.level + 1
-        });
-      }
-    } else if (item.type === "feature") {
-      if (other.length === 0) {
-        return super._onDrop(event);
-      } else {
-        other[0].update({
-          "system.level": other[0].data.data.level + 1
-        });
-      }
-    } else if (item.type === "weapon" || item.type === "armor" || item.type === "accessory" || item.type === "shield" || item.type === "spell" || item.type === "item" || item.type === "limit") {
-      return super._onDrop(event);
-    }
-
-    return false;
   }
 }
