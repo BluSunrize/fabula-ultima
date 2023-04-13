@@ -73,6 +73,16 @@
           "accessory2": "",
           "armor": ""
         }
+      },
+      "enemy": {
+        "type": "",
+        "rank": "soldier",
+        "championLevel": 0,
+        "traits": "",
+        "specialRules": "",
+        "initiative": 0,
+        "defenseBonus": 0,
+        "magicDefenseBonus": 0
       }
     },
     "character": {
@@ -98,20 +108,10 @@
       "exp": 0
     },
     "npc": {
-      "templates": ["base"],
-      "type": "",
-      "rank": "soldier",
-      "championLevel": 0,
-      "traits": "",
-      "specialRules": ""
+      "templates": ["base", "enemy"]
     },
     "villain": {
-      "templates": ["base"],
-      "type": "",
-      "rank": "soldier",
-      "championLevel": 0,
-      "traits": "",
-      "specialRules": "",
+      "templates": ["base", "enemy"],
       "ultimaPoints": "5",
       "ascensionLevel": "minor"
     }
@@ -139,6 +139,15 @@
           "meleePrecisionBonus": 0,
           "rangedPrecisionBonus": 0,
           "condition": ""
+        }
+      },
+      "rollable": {
+        "firstAbility": "",
+        "secondAbility": "",
+        "precisionBonus": 0,
+        "damage": {
+          "bonus": 0,
+          "type": ""
         }
       }
     },
@@ -188,11 +197,12 @@
       }
     },
     "spell": {
-      "templates": ["base"],
+      "templates": ["base", "rollable"],
+      "isOffensive": false,
       "class": "",
       "target": "",
       "duration": "",
-      "formula": "",
+      "mp": "",
       "cost": {
         "amount": 0,
         "resource": ""
@@ -228,16 +238,9 @@
       "type": ""
     },
     "weapon": {
-      "templates": ["base", "buyable", "rareable"],
-      "firstAbility": "",
-      "secondAbility": "",
+      "templates": ["base", "buyable", "rareable", "rollable"],
       "twoHanded": false,
       "category": "",
-      "damage": {
-        "bonus": 0,
-        "type": ""
-      },
-      "precisionBonus": 0,
       "defenseBonus": 0,
       "magicDefenseBonus": 0,
       "type": "",
@@ -257,7 +260,8 @@
       "isMartial": false
     },
     "accessory": {
-      "templates": ["base", "buyable", "rareable"]
+      "templates": ["base", "buyable", "rareable"],
+      "isEquipped": false
     },
     "artifact": {
       "templates": ["base"]

@@ -81,6 +81,18 @@ FABULAULTIMA.damageTypes = {
     "poison": "FABULAULTIMA.DamagePoison"
 }
 
+FABULAULTIMA.damageIcons = {
+    "normal": "fa-sword",
+    "wind": "fa-tornado",
+    "lightning": "fa-bolt",
+    "dark": "fa-skull-cow",
+    "earth": "fa-gem",
+    "fire": "fa-fire",
+    "ice": "fa-snowflake",
+    "light": "fa-lightbulb",
+    "poison": "fa-skull-crossbones",
+}
+
 FABULAULTIMA.affinityTypes = {
     "vulnerable": "FABULAULTIMA.Vulnerable",
     "neutral": "FABULAULTIMA.Neutral",

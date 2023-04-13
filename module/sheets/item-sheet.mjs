@@ -50,6 +50,8 @@ export class FabulaUltimaItemSheet extends ItemSheet {
       context = this.getFeatureData(context);
     } else if (context.item.type === "weapon") {
       context = this.getWeaponData(context);
+    } else if (context.item.type === "spell") {
+      context = this.getSpellData(context);
     }
 
     return context;
@@ -68,6 +70,13 @@ export class FabulaUltimaItemSheet extends ItemSheet {
     context.data.abilities = CONFIG.FABULAULTIMA.abilities;
     context.data.weaponCategories = CONFIG.FABULAULTIMA.weaponCategories;
     context.data.weaponTypes = CONFIG.FABULAULTIMA.weaponTypes;
+    context.data.damageTypes = CONFIG.FABULAULTIMA.damageTypes;
+
+    return context;
+  }
+
+  getSpellData(context) {
+    context.data.abilities = CONFIG.FABULAULTIMA.abilities;
     context.data.damageTypes = CONFIG.FABULAULTIMA.damageTypes;
 
     return context;

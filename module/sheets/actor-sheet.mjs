@@ -46,9 +46,16 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     }
 
     // Prepare NPC data and items.
-    if (context.actor.type == 'npc') {
+    if (context.actor.type == 'npc' || context.actor.type == 'villain') {
       this._prepareItems(context);
+      await this._updateAbilitiesStatusAffinities(context);
+      await this._updateCharacterAttributes(context);
+      await this._updateEquipmentBasedStats(context);
     }
+
+    // Send setting flags to sheet
+    context.useLimits = game.settings.get('fabulaultima', 'useLimits');
+    context.usePeculiarities = game.settings.get('fabulaultima', 'usePeculiarities');
 
     context.system.crisisHealth = Math.floor(context.system.health.max / 2);
 
@@ -69,6 +76,14 @@ export class FabulaUltimaActorSheet extends ActorSheet {
    * @return {undefined}
    */
   async _prepareCharacterData(context) {
+    await this._updateAbilitiesStatusAffinities(context);
+    this._updateCharacterLevel(context);
+    this._updateCharacterPoints(context);
+    this._updateCharacterAttributes(context);
+    await this._updateEquipmentBasedStats(context);
+  }
+
+  async _updateAbilitiesStatusAffinities(context) {
     // Handle ability scores.
     context.system.orderedAbilities = {};
 
@@ -86,8 +101,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     const statuses1 = {};
     const statuses2 = {};
     for (let [k, v] of Object.entries(CONFIG.FABULAULTIMA.statuses)) {
-      if (v.affects.length > 1)
-      {
+      if (v.affects.length > 1) {
         statuses2[k] = v;
         statuses2[k].label = game.i18n.localize(v.label);
         statuses2[k].value = context.system.status[k];
@@ -102,16 +116,31 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     context.system.statuses1 = statuses1;
     context.system.statuses2 = statuses2;
 
-    this._updateCharacterLevel(context);
-    this._updateCharacterPoints(context);
-    this._updateCharacterAttributes(context);
-    await this._updateEquipmentBasedStats(context);
+    const affinities = {};
+    for (let [k, v] of Object.entries(CONFIG.FABULAULTIMA.damageTypes)) {
+      if (k == 'none')
+        continue;
+      affinities[k] = {
+        'label': game.i18n.localize(v),
+        'value': context.system.affinities[k],
+        'icon': CONFIG.FABULAULTIMA.damageIcons[k],
+      }
+    }
+    context.system.orderedAffinities = affinities;
   }
 
   async _updateEquipmentBasedStats(context) {
     context.system.initiativeBonus = 0;
     context.system.defense = parseInt(context.system.abilities.dex.value);
     context.system.magicDefense = parseInt(context.system.abilities.int.value);
+
+    // bonuses on enemies
+    if (context.system.defenseBonus) {
+      context.system.defense += parseInt(context.system.defenseBonus);
+    }
+    if (context.system.magicDefenseBonus) {
+      context.system.magicDefense += parseInt(context.system.magicDefenseBonus);
+    }
 
     if (context.system.equipped.armor !== "") {
       const armor = this.actor.items.get(context.system.equipped.armor);
@@ -164,23 +193,13 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       }
     }
 
-    if (context.system.equipped.accessory !== "") {
-      const acc = this.actor.items.get(context.system.equipped.accessory);
-      if (acc && acc.data.data.quality) {
-        context.system.initiativeBonus += parseInt(acc.data.data.quality.initiativeBonus);
-        context.system.defense += parseInt(acc.data.data.quality.defenseBonus);
-        context.system.magicDefense += parseInt(acc.data.data.quality.magicDefenseBonus);
+    // handle all equipped accessories
+    for (let item of this.actor.items)
+      if (item.type === 'accessory' && item.data.data.isEquipped && item.data.data.quality) {
+        context.system.initiativeBonus += parseInt(item.data.data.quality.initiativeBonus);
+        context.system.defense += parseInt(item.data.data.quality.defenseBonus);
+        context.system.magicDefense += parseInt(item.data.data.quality.magicDefenseBonus);
       }
-    }
-
-    if (context.system.equipped.accessory2 !== "") {
-      const acc = this.actor.items.get(context.system.equipped.accessory2);
-      if (acc && acc.data.data.quality) {
-        context.system.initiativeBonus += parseInt(acc.data.data.quality.initiativeBonus);
-        context.system.defense += parseInt(acc.data.data.quality.defenseBonus);
-        context.system.magicDefense += parseInt(acc.data.data.quality.magicDefenseBonus);
-      }
-    }
   }
 
   /**
@@ -199,6 +218,8 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     const accessories = [];
     const classes = [];
     const other = [];
+    const spells = [];
+    const features = [];
     const limits = [];
 
     // Iterate through items, allocating to containers
@@ -275,7 +296,13 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       else if (i.type === 'limit') {
         limits.push(i);
       }
-      else if (i.type !== "feature" && i.type !== "spell") {
+      else if (i.type === 'spell') {
+        spells.push(i);
+      }
+      else if (i.type === 'feature') {
+        features.push(i);
+      }
+      else {
         other.push(i);
       }
     }
@@ -310,6 +337,8 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     context.armor = armor;
     context.accessories = accessories;
     context.shields = shields;
+    context.spells = spells;
+    context.features = features;
     context.other = other;
     context.limits = limits;
 
@@ -401,6 +430,14 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     // Add Inventory Item
     html.find('.item-create').click(this._onItemCreate.bind(this));
 
+    html.find('.item-edit').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      if (item?.sheet) {
+        item.sheet.render(true);
+      }
+    });
+
     html.find('.item-equipMain').click(async ev => {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
@@ -457,11 +494,18 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     html.find('.item-equipAccessory').click(async ev => {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
-
       const values = {
-        "system.equipped.accessory": item.id
+        "system.isEquipped": true
       };
-      await this.actor.update(values);
+      await item.update(values);
+    });
+    html.find('.item-unequipAccessory').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      const values = {
+        "system.isEquipped": false
+      };
+      await item.update(values);
     });
     html.find('.item-equipAccessory2').click(async ev => {
       const li = $(ev.currentTarget).parents(".item");

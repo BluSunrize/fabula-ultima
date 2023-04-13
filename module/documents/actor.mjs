@@ -48,8 +48,8 @@ export class FabulaUltimaActor extends Actor {
 
     // Loop through ability scores, and add their modifiers to our sheet output.
     //for (let [key, ability] of Object.entries(data.abilities)) {
-      // Calculate the modifier using d20 rules.
-      //ability.mod = Math.floor((ability.value - 10) / 2);
+    // Calculate the modifier using d20 rules.
+    //ability.mod = Math.floor((ability.value - 10) / 2);
     //}
   }
 
@@ -93,7 +93,7 @@ export class FabulaUltimaActor extends Actor {
 
     let formula = this.getBaseRollFormula(firstAbility, secondAbility, bonus);
 
-    const roll = await new Roll(formula, this.getRollData()).roll({async: true});
+    const roll = await new Roll(formula, this.getRollData()).roll({ async: true });
     const d = roll.dice;
 
     const maxVal = d.reduce(function (a, b) {
@@ -127,7 +127,7 @@ export class FabulaUltimaActor extends Actor {
     };
 
     return ChatMessage.create(chatData);
-  }  
+  }
 
   async rollFeature(feature) {
     const templateData = {
@@ -161,6 +161,70 @@ export class FabulaUltimaActor extends Actor {
 
   async rollSpell(spell) {
 
+    const templateData = {
+      actor: this,
+      spell: spell,
+      type: this.type,
+      flavor: spell.name
+    };
+
+    let roll = undefined;
+
+    if (spell.system.isOffensive) {
+      // game.i18n.localize("FABULAULTIMA.RollPrecisionTest");
+
+      let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, spell.system.precisionBonus);
+
+      roll = await new Roll(formula, this.getRollData()).roll({ async: true });
+      const d = roll.dice;
+
+      const maxVal = d.reduce(function (a, b) {
+        return Math.max(a.total, b.total);
+      });
+
+      const isFumble = d.every(die => die.total === 1);
+      const isCrit = d.every(die => die.total === d[0].total && die.total !== 1 && die.total > 5);
+
+      const first = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.firstAbility]);
+      const second = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.secondAbility]);
+      templateData["formula"] = "【" + first + " + " + second + "】";
+      if (spell.system.precisionBonus != 0) {
+        templateData["formula"] += " + " + spell.system.precisionBonus;
+      }
+      templateData["total"] = roll.total;
+      templateData["dice"] = roll.dice;
+      templateData["damage"] = maxVal + parseInt(spell.system.damage.bonus);
+      templateData["damageType"] = spell.system.damage.type;
+      templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
+      templateData["isCritical"] = isCrit;
+      templateData["isFumble"] = isFumble;
+    }
+    const template = "systems/fabulaultima/templates/chat/spell-card.html";
+    const html = await renderTemplate(template, templateData);
+
+    let token = this.token;
+    if (!token) {
+      token = this.getActiveTokens()[0];
+    }
+
+    const chatData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        token: this.token ? this.token.id : null,
+        alias: this.token ? this.token.name : this.name,
+        actor: this.id
+      }
+    };
+    if (roll) {
+      chatData['roll'] = roll;
+      chatData['rollMode'] = game.settings.get("core", "rollMode");
+      chatData['type'] = CONST.CHAT_MESSAGE_TYPES.ROLL;
+    }
+
+    return ChatMessage.create(chatData);
+
   }
 
   async rest() {
@@ -180,10 +244,10 @@ export class FabulaUltimaActor extends Actor {
       type: this.type,
       flavor: flavour
     };
-    
+
     let formula = this.getRollFormula(weapon.data);
 
-    const roll = await new Roll(formula, this.getRollData()).roll({async: true});
+    const roll = await new Roll(formula, this.getRollData()).roll({ async: true });
     const d = roll.dice;
 
     const maxVal = d.reduce(function (a, b) {
@@ -264,7 +328,9 @@ export class FabulaUltimaActor extends Actor {
       weaponBonus += (bonus * level);
     }
 
-    let base = "【" + item.data.firstAbility.toUpperCase() + " + " + item.data.secondAbility.toUpperCase() + "】"; 
+    const first = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[item.data.firstAbility]);
+    const second = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[item.data.secondAbility]);
+    let base = "【" + first + " + " + second + "】";
     if (weaponBonus !== 0) {
       base += " + " + weaponBonus;
     }
@@ -339,7 +405,8 @@ export class FabulaUltimaActor extends Actor {
 
     if (base.includes("@")) {
       for (const ability in CONFIG.FABULAULTIMA.abilities) {
-        base = base.replace("@" + ability, ability.toUpperCase());
+        const abbr = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[ability]);
+        base = base.replace("@" + ability, abbr);
       }
     }
 
@@ -347,7 +414,9 @@ export class FabulaUltimaActor extends Actor {
   }
 
   getGenericFormula(firstAbility, secondAbility, bonus = 0) {
-    let base = "【" + firstAbility.toUpperCase() + "+ " + secondAbility.toUpperCase() + "】"; 
+    const first = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[firstAbility]);
+    const second = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[secondAbility]);
+    let base = "【" + first + "+ " + second + "】";
     if (bonus !== 0) {
       base += " + " + bonus;
     }
@@ -418,25 +487,16 @@ export class FabulaUltimaActor extends Actor {
       }
     }
 
-    if (this.system.equipped.accessory !== "") {
-      const acc = this.items.get(this.system.equipped.accessory);
-      if (acc && acc.data.data.quality) {
-        bonus += parseInt(acc.data.data.quality.initiativeBonus);
+    for (let item of this.system.items)
+      if (item.type === 'accessory' && item.data.data.isEquipped && item.data.data.quality) {
+        bonus += parseInt(item.data.data.quality.initiativeBonus);
       }
-    }
-
-    if (this.system.equipped.accessory2 !== "") {
-      const acc = this.items.get(this.system.equipped.accessory2);
-      if (acc && acc.data.data.quality) {
-        bonus += parseInt(acc.data.data.quality.initiativeBonus);
-      }
-    }
 
     return bonus;
   }
 
   getBaseRollFormula(firstAbility, secondAbility, bonus = 0) {
-    let base = "1d@" + firstAbility + " + 1d@" + secondAbility;
+    let base = `1d@abilities.${firstAbility}.value + 1d@abilities.${secondAbility}.value`;
     if (bonus !== 0) {
       base += " + " + bonus;
     }

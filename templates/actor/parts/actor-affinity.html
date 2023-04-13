@@ -1,0 +1,20 @@
+<div class="affinity flexcol flex-group-center">
+  <div class="flexrow">
+    <label for="system.affinities.{{key}}"
+      class="resource-label stat"
+      data-label="{{affinity.label}}"
+      style="min-width: 0;">
+      {{affinity.label}}
+    </label>
+    {{#if affinity.icon}}
+    <i class="fas {{affinity.icon}} affinity-icon affinity-icon-{{key}}"></i>
+    {{/if}}
+  </div>
+  <select name="system.affinities.{{key}}">
+    {{> "systems/fabulaultima/templates/actor/parts/select-option.html" value="vulnerable" current=affinity.value localKey="FABULAULTIMA.AffinityVU"}}
+    {{> "systems/fabulaultima/templates/actor/parts/select-option.html" value="neutral" current=affinity.value localKey="FABULAULTIMA.AffinityNE"}}
+    {{> "systems/fabulaultima/templates/actor/parts/select-option.html" value="resistant" current=affinity.value localKey="FABULAULTIMA.AffinityRS"}}
+    {{> "systems/fabulaultima/templates/actor/parts/select-option.html" value="immune" current=affinity.value localKey="FABULAULTIMA.AffinityIM"}}
+    {{> "systems/fabulaultima/templates/actor/parts/select-option.html" value="absorb" current=affinity.value localKey="FABULAULTIMA.AffinityAB"}}
+  </select>
+</div>

@@ -1,0 +1,5 @@
+{{#if (eq value current)}}
+<option value="{{ value }}" selected="selected">{{ localize localKey }}</option>
+{{else}}
+<option value="{{ value }}">{{ localize localKey }}</option>
+{{/if}}
