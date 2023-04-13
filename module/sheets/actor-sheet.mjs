@@ -54,6 +54,22 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       await this._updateEquipmentBasedStats(context);
     }
 
+    // Prepare Group items
+    if (context.actor.type == 'group') {
+      const consumables = [];
+      const otherItems = [];
+      for (let i of context.items) {
+        if (i.type === 'consumable') {
+          consumables.push(i);
+        }
+        else {
+          otherItems.push(i);
+        }
+      }
+      context.consumables = consumables;
+      context.other = otherItems;
+    }
+
     // Send setting flags to sheet
     context.useLimits = game.settings.get('fabulaultima', 'useLimits');
     context.usePeculiarities = game.settings.get('fabulaultima', 'usePeculiarities');
