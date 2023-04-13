@@ -14,7 +14,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       width: 600,
       height: 600,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }],
-      dragDrop: [{ dragSelector: '.items-list .item', dropSelector: '.sheet-body' }],
+      dragDrop: [{ dragSelector: '.items-list .item.can-drag', dropSelector: '.sheet-body' }],
     });
   }
 
