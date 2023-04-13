@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "npc", "villain"],
+    "types": ["character", "group", "npc", "villain"],
     "templates": {
       "base": {
         "health": {
@@ -106,6 +106,9 @@
       "limitCondition": "",
       "zenit": 0,
       "exp": 0
+    },
+    "group": {
+      "templates": ["base"]
     },
     "npc": {
       "templates": ["base", "enemy"]

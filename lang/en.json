@@ -198,6 +198,7 @@
   "FABULAULTIMA.Equipped": "Equipped",
   "FABULAULTIMA.BasicAttacks": "Basic Attacks",
   "FABULAULTIMA.OtherActions": "Other Actions",
+  "FABULAULTIMA.Items": "Items",
 
   "FABULAULTIMA.PlayerTurn": "Player Turn",
   "FABULAULTIMA.EnemyTurn": "Enemy Turn",
