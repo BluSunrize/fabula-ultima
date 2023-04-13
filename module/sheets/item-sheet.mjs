@@ -52,6 +52,9 @@ export class FabulaUltimaItemSheet extends ItemSheet {
       context = this.getWeaponData(context);
     } else if (context.item.type === "spell") {
       context = this.getSpellData(context);
+    } else if (context.item.type === "consumable") {
+      context.data.recoverResources = CONFIG.FABULAULTIMA.costResources;
+      context.data.damageTypes = CONFIG.FABULAULTIMA.damageTypes;
     }
 
     return context;
