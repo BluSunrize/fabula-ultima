@@ -176,7 +176,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
           const roll = await new Roll(armor.data.data.magicDefenseFormula, this.actor.getRollData()).roll();
           context.system.magicDefense = parseInt(roll.total);
         } else {
-          context.system.magicDefense = parseInt(armor.data.data.defenseFormula);
+          context.system.magicDefense = parseInt(armor.data.data.magicDefenseFormula);
         }
       }
     }
