@@ -171,6 +171,13 @@
   text-align: center;
 }
 
+/* don't do weird alignment for input fields */
+.flex-group-center input,
+.flex-group-left input,
+.flex-group-right input {
+  text-align: initial;
+}
+
 .flex-group-left {
   -webkit-box-pack: start;
   -ms-flex-pack: start;
