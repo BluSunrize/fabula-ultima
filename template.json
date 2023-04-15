@@ -3,6 +3,7 @@
     "types": ["character", "group", "npc", "villain"],
     "templates": {
       "base": {
+        "nickname": "",
         "health": {
           "value": 5,
           "min": 0,

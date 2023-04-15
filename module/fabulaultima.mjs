@@ -9,6 +9,7 @@ import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { FABULAULTIMA } from "./helpers/config.mjs";
 import { FabulaUltimaCombatHud } from "./helpers/combat.js";
 import { FabulaUltimaGroupRoll } from "./helpers/groupRoll/groupRoll.mjs";
+import { LongNamePlayerList } from "./sheets/longname-player-list.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -40,6 +41,7 @@ Hooks.once('init', async function() {
   // Define custom Document classes
   CONFIG.Actor.documentClass = FabulaUltimaActor;
   CONFIG.Item.documentClass = FabulaUltimaItem;
+  CONFIG.ui.players = LongNamePlayerList;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
