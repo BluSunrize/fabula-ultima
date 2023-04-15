@@ -1,0 +1,27 @@
+<div class="arcanum-card" data-actor-id="{{actor._id}}" data-item-id="{{#if overrideId}}{{overrideId}}{{else}}{{item._id}}{{/if}}"
+    {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}}>
+    
+    <header class="card-header flexrow">
+        <img src="{{arcanum.img}}" title="{{arcanum.name}}" width="36" height="36" />
+        <h3 class="item-name">
+          {{#if prename}}{{prename}}: {{/if}}{{arcanum.name}}{{#if postname}}: {{postname}}{{/if}}
+          <br>
+          {{arcanum.system.type}}
+        </h3>
+    </header>
+
+    <div class="card-content">
+      {{#if showMerge}}
+      <div class="merge">
+        <h3>{{localize "FABULAULTIMA.Merge"}}</h3>
+        {{{arcanum.system.merge}}}
+      </div>
+      {{/if}}
+      {{#if showDismiss}}
+      <div class="dismiss">
+        <h3>{{localize "FABULAULTIMA.Dismiss"}}</h3>
+        {{{arcanum.system.dismiss}}}
+      </div>
+      {{/if}}
+    </div>
+</div>

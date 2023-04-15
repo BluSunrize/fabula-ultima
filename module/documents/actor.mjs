@@ -227,6 +227,38 @@ export class FabulaUltimaActor extends Actor {
 
   }
 
+  async rollArcanum(arcanum, showMerge = true, showDismiss = true) {
+    const templateData = {
+      actor: this,
+      arcanum: arcanum,
+      type: this.type,
+      flavor: arcanum.name,
+      showMerge: showMerge,
+      showDismiss: showDismiss,
+    };
+
+    const template = "systems/fabulaultima/templates/chat/arcanum-card.html";
+    const html = await renderTemplate(template, templateData);
+
+    let token = this.token;
+    if (!token) {
+      token = this.getActiveTokens()[0];
+    }
+
+    const chatData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        token: this.token ? this.token.id : null,
+        alias: this.token ? this.token.name : this.name,
+        actor: this.id
+      }
+    };
+
+    return ChatMessage.create(chatData);
+  }
+
   async rest() {
     const values = {
       "system.health.value": this.system.health.max,

@@ -236,6 +236,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     const classes = [];
     const other = [];
     const spells = [];
+    const arcana = [];
     const features = [];
     const limits = [];
 
@@ -316,6 +317,9 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       else if (i.type === 'spell') {
         spells.push(i);
       }
+      else if (i.type === 'arcanum') {
+        arcana.push(i);
+      }
       else if (i.type === 'feature') {
         features.push(i);
       }
@@ -355,6 +359,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     context.accessories = accessories;
     context.shields = shields;
     context.spells = spells;
+    context.arcana = arcana;
     context.features = features;
     context.other = other;
     context.limits = limits;
@@ -537,6 +542,37 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       }
 
       return;
+    });
+
+    html.find('.item-summonArcanum').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      const values = {
+        "system.isSummoned": true
+      };
+      // show in chat
+      Dialog.confirm({
+        title: game.i18n.localize('FABULAULTIMA.ArcanaMergeInChat'),
+        yes: () => this.actor.rollArcanum(item, true, false),
+        no: () => { },
+        defaultYes: false
+      });
+      await item.update(values);
+    });
+    html.find('.item-dismissArcanum').click(async ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const item = this.actor.items.get(li.data("itemId"));
+      const values = {
+        "system.isSummoned": false
+      };
+      // show in chat
+      Dialog.confirm({
+        title: game.i18n.localize('FABULAULTIMA.ArcanaDismissInChat'),
+        yes: () => this.actor.rollArcanum(item, false, true),
+        no: () => { },
+        defaultYes: false
+      });
+      await item.update(values);
     });
 
     // Delete Inventory Item

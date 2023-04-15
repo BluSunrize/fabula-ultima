@@ -1,0 +1,45 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+      <div class="resource flexrow">
+        <label class="resource-label">Type</label>
+        <input type="text" name="data.type" value="{{data.type}}"/>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="attributes">{{localize "FABULAULTIMA.Attributes"}}</a>
+    <a class="item" data-tab="description">{{localize "FABULAULTIMA.Biography"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Attributes Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="resource flexrow">
+        <label class="resource-label long">{{localize "FABULAULTIMA.Domains"}}</label>
+        <input type="text" name="data.domains" value="{{data.domains}}"/>
+      </div>
+      <br>
+      <div class="resource flexrow">
+        <label class="resource-label long">{{localize "FABULAULTIMA.Merge"}}</label>
+        {{editor content=data.merge target="data.merge" rollData=rollData button=true owner=owner editable=editable}}
+      </div>
+      <br>
+      <div class="resource flexrow">
+        <label class="resource-label long">{{localize "FABULAULTIMA.Dismiss"}}</label>
+        {{editor content=data.dismiss target="data.dismiss" rollData=rollData button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+    </div>
+  </section>
+</form>
