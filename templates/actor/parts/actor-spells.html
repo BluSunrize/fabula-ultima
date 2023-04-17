@@ -61,12 +61,16 @@
     </div>
   </li>
   {{#each arcana as |arcanum id|}}
-    <li class="item can-drag flexrow" data-item-id="{{arcanum._id}}">
+    <li class="item arcanum can-drag flexrow {{#if arcanum.data.isSummoned}}summoned{{/if}}" data-item-id="{{arcanum._id}}">
       <div class="item-name">
         <div class="item-image">
           <a class="rollable" data-roll-type="arcanum"><img src="{{arcanum.img}}" title="{{arcanum.name}}" width="24" height="24"/></a>
         </div>
-        <h4>{{arcanum.name}}</h4>
+        <h4 class="flexcol">
+          {{arcanum.name}}
+          <br>
+          {{arcanum.data.type}}
+        </h4>
       </div>
       <div class="item-domains item-prop">{{arcanum.data.domains}}</div>
       <div class="item-merge item-prop flexlarge">{{{arcanum.data.merge}}}</div>

@@ -838,3 +838,47 @@ input[readonly] {
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid var(--color-border-light-tertiary);
 }
+
+.fabulaultima .item.arcanum.summoned {
+  position: relative;
+}
+
+.fabulaultima .item.arcanum.summoned::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 5px double var(--color-border-highlight);
+  border-radius: 12px;
+  animation: clippath 3s infinite linear;
+}
+
+@keyframes clippath {
+
+  0%,
+  100% {
+    clip-path: inset(0 80% 50% 0);
+  }
+
+  34% {
+    clip-path: inset(0 0 95% 75%);
+  }
+
+  42% {
+    clip-path: inset(0 0 0 90%);
+  }
+
+  50% {
+    clip-path: inset(50% 0 0 80%);
+  }
+
+  84% {
+    clip-path: inset(95% 75% 0 0)
+  }
+
+  92% {
+    clip-path: inset(0 90% 0 0);
+  }
+}
