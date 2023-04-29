@@ -10,6 +10,8 @@ export class LongNamePlayerList extends PlayerList {
     ret.users.forEach(u => {
       let actor = game.actors.get(u.character);
       u.charname = actor?.system.nickname || actor?.name || '';
+      if(actor?.system.pronouns)
+        u.charname += ` (${actor?.system.pronouns})`;
     });
     return ret;
   }

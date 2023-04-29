@@ -4,6 +4,7 @@
     "templates": {
       "base": {
         "nickname": "",
+        "pronouns": "",
         "health": {
           "value": 5,
           "min": 0,
