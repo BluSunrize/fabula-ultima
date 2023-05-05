@@ -23,6 +23,7 @@
             "max": 60
           }
         },
+        "ritualDisciplines": "",
         "affinities": {
           "normal": "neutral",
           "wind": "neutral",

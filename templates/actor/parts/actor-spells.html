@@ -1,3 +1,9 @@
+{{#unless hideRituals}}
+<span class="resource-label">{{localize "FABULAULTIMA.RitualDisciplines"}}</span>
+<input type="text" name="system.ritualDisciplines" value="{{system.ritualDisciplines}}" data-dtype="String"/>
+<br>
+{{/unless}}
+
 <span class="resource-label">{{localize "FABULAULTIMA.Spells"}}</span>
 <ol class="items-list">
   <li class="item flexrow items-header">
@@ -40,11 +46,6 @@
     </li>
   {{/each}}
 </ol>
-
-{{#unless hideRituals}}
-<br>
-<span class="resource-label">{{localize "FABULAULTIMA.Rituals"}}</span>
-{{/unless}}
 
 {{#unless hideArcana}}
 <br>
