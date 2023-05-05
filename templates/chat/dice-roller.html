@@ -1,0 +1,15 @@
+<div class="dice-roller flexrow flex-group-center">
+  <select id="first-ability">
+    {{#each abilities as |ability key|}}
+      {{option key (localize ability)}}
+    {{/each}}
+  </select>
+  <i class="fas fa-plus"></i>
+  <select id="second-ability">
+    {{#each abilities as |ability key|}}
+      {{option key (localize ability)}}
+    {{/each}}
+  </select>
+  <i class="fas fa-plus"></i>
+  <input type="text" id="bonus" value=""/>
+</div>

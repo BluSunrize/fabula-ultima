@@ -146,6 +146,45 @@ Hooks.on('getSceneControlButtons', async function (buttons) {
   FabulaUltimaGroupRoll.getSceneControlButtons(buttons);
 });
 
+Hooks.on('renderSidebarTab', (app, html, data) => {
+  html.find('.chat-control-icon').click(async (event) => {
+    const token = canvas.tokens.controlled[0];
+    if(!token){
+        ui.notifications.warn('You need to select a token to roll dice with');
+        return;
+    }
+    const actor = token.actor;
+    Dialog.prompt({
+      title: game.i18n.localize('FABULAULTIMA.DiceRoller'),
+      content: await renderTemplate('systems/fabulaultima/templates/chat/dice-roller.html', {
+        abilities: CONFIG.FABULAULTIMA.abilities,
+      }),
+      callback: async (html) => {
+        let first = html.find('#first-ability').val();
+        let second = html.find('#second-ability').val();
+        let bonus = html.find('#bonus').val();
+        const roll = await new Roll(
+          actor.getBaseRollFormula(first, second, bonus), 
+          actor.getRollData()
+        ).roll({ async: true });
+        const chatData = {
+          user: game.user._id,
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          // content: html,
+          rollMode: game.settings.get("core", "rollMode"),
+          roll: roll,
+          speaker: {
+            token: token ? token.id : null,
+            alias: token ? token.name : null,
+            actor: token ? token.actor.id: null
+          }
+        };
+        return ChatMessage.create(chatData);
+      }
+    });
+  });
+});
+
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
 /* -------------------------------------------- */
