@@ -181,6 +181,16 @@
         </section>
 
       </section>
+
+      <section class="affinities">
+        <label class="resource-label">{{localize "FABULAULTIMA.Affinities"}}</label>
+        <div class="affinities flexrow">
+          {{#each system.orderedAffinities as |affinity key|}}
+          {{> "systems/fabulaultima/templates/actor/parts/actor-affinity.html" key=key affinity=affinity}}
+          {{/each}}
+        </div>
+      </section>
+
       <section class="bonds">
         {{!-- This is a Handlebars partial. They're stored in the `/parts` folder next to this sheet, and defined in module/helpers/templates.mjs --}}
         {{> "systems/fabulaultima/templates/actor/parts/actor-bonds.html"}}
