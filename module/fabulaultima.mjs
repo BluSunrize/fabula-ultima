@@ -110,8 +110,8 @@ Hooks.once("ready", async function() {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
-  if (game.combat)
-    game.fabulaultima.combatHud.addToScreen();
+  // if (game.combat)
+    // game.fabulaultima.combatHud.addToScreen();
 });
 
 Hooks.once("socketlib.ready", () => {
@@ -122,24 +122,24 @@ Hooks.once("socketlib.ready", () => {
 });
 
 Hooks.on("createCombat", async function() {
-  game.fabulaultima.combatHud.addToScreen();
+  // game.fabulaultima.combatHud.addToScreen();
 });
 
 Hooks.on("deleteCombat", async function () {
-  game.fabulaultima.combatHud.deleteFromScreen();
+  // game.fabulaultima.combatHud.deleteFromScreen();
 });
 
 Hooks.on("createCombatant", async function () {
-  game.fabulaultima.combatHud.update();
+  // game.fabulaultima.combatHud.update();
 });
 
 Hooks.on("deleteCombatant", async function () {
-  game.fabulaultima.combatHud.update();
+  // game.fabulaultima.combatHud.update();
 });
 
 Hooks.on("updateActor", async function (actor) {
-  if (game.combat)
-    game.fabulaultima.combatHud.update();
+  // if (game.combat)
+    // game.fabulaultima.combatHud.update();
 });
 
 Hooks.on('getSceneControlButtons', async function (buttons) {
