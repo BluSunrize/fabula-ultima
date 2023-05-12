@@ -414,7 +414,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       if (!s.value) continue; 
 
       for (let affected of s.affects) {
-        maxAbilities[affected] = (Number(maxAbilities[affected]) - 2) + "";
+        maxAbilities[affected] = Math.max((Number(maxAbilities[affected]) - 2), 6) + "";
       }
     }
 
@@ -423,7 +423,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       if (!s.value) continue;
 
       for (let affected of s.affects) {
-        maxAbilities[affected] = (Number(maxAbilities[affected]) - 2) + "";
+        maxAbilities[affected] = Math.max((Number(maxAbilities[affected]) - 2), 6) + "";
       }
     }
 
