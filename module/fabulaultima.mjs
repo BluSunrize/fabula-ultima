@@ -173,12 +173,11 @@ Hooks.on('getSceneControlButtons', async function (buttons) {
 
 Hooks.on('renderSidebarTab', (app, html, data) => {
   html.find('.chat-control-icon').click(async (event) => {
-    const token = canvas.tokens.controlled[0];
-    if(!token){
+    const actor = canvas.tokens.controlled[0]?.token || game.user.character;
+    if(!actor){
         ui.notifications.warn('You need to select a token to roll dice with');
         return;
     }
-    const actor = token.actor;
     Dialog.prompt({
       title: game.i18n.localize('FABULAULTIMA.DiceRoller'),
       content: await renderTemplate('systems/fabulaultima/templates/chat/dice-roller.html', {
@@ -199,9 +198,8 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
           rollMode: game.settings.get("core", "rollMode"),
           roll: roll,
           speaker: {
-            token: token ? token.id : null,
-            alias: token ? token.name : null,
-            actor: token ? token.actor.id: null
+            alias: actor.name,
+            actor: actor.id,
           }
         };
         return ChatMessage.create(chatData);
