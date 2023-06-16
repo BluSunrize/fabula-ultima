@@ -193,9 +193,12 @@ export class FabulaUltimaActor extends Actor {
       }
       templateData["total"] = roll.total;
       templateData["dice"] = roll.dice;
-      templateData["damage"] = maxVal + parseInt(spell.system.damage.bonus);
-      templateData["damageType"] = spell.system.damage.type;
-      templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
+      const damageBonus = parseInt(spell.system.damage.bonus);
+      if(spell.system.damage.type != 'none' || damageBonus) {
+        templateData["damage"] = maxVal + damageBonus;
+        templateData["damageType"] = spell.system.damage.type;
+        templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
+      }
       templateData["isCritical"] = isCrit;
       templateData["isFumble"] = isFumble;
     }

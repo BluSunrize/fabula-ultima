@@ -51,10 +51,12 @@
                 {{total}} {{#if custom}}{{custom}}{{/if}}
             </h4>
 
+            {{#if damage}}
             <h3>{{localize "FABULAULTIMA.Damage"}}</h3>
             <h4 class="dice-total {{damageType}}">
                 {{damage}} {{damageTypeLoc}}
             </h4>
+            {{/if}}
 
             <div class="card-buttons">
                 <!-- TODO fabula points usage -->
