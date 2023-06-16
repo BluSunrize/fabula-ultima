@@ -137,7 +137,32 @@ Hooks.on("deleteCombatant", async function () {
   // game.fabulaultima.combatHud.update();
 });
 
-Hooks.on("updateActor", async function (actor) {
+Hooks.on("updateActor", async function (actor, changes, options, userId) {
+  if(userId != game.userId)
+    return;
+  if(changes.system?.health) {
+    const effectIconPath = 'icons/svg/hazard.svg';
+    const effectLabel = 'Crisis';
+    const effectOrigin = 'crisis';
+
+    const existingEffect = actor.effects.find(i => i.data.origin === effectOrigin);
+    if (existingEffect && !actor.isCrisis()) {
+      await existingEffect.delete();
+    } else if (!existingEffect && actor.isCrisis()) {
+      await actor.createEmbeddedDocuments("ActiveEffect", [{
+        label: effectLabel,
+        icon: effectIconPath,
+        origin: effectOrigin,
+        tint: '#ff0000',
+        flags: {
+          core: {
+            statusId: effectOrigin,
+          }
+        }
+      }]);
+    }
+  }
+
   // if (game.combat)
     // game.fabulaultima.combatHud.update();
 });
