@@ -178,3 +178,22 @@ export class FabulaUltimaCombatHud {
         return p;
     }
 }
+
+export class FabulaUltimaCombatTracker extends CombatTracker {
+  /** @override */
+  _getEntryContextOptions() {
+    const m = super._getEntryContextOptions();
+    m.unshift({
+      name: 'Duplicate Activation',
+      icon: '<i class="fas fa-clone"></i>',
+      callback: (target) => {
+        const combat = this.viewed;
+        const source = combat.combatants.get($(target).data().combatantId);
+        combat.createEmbeddedDocuments('Combatant', [{
+          ...source,
+        }])
+      }
+    });
+    return m;
+  }
+}

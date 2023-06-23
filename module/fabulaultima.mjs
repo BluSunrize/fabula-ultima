@@ -7,7 +7,7 @@ import { FabulaUltimaItemSheet } from "./sheets/item-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { FABULAULTIMA } from "./helpers/config.mjs";
-import { FabulaUltimaCombatHud } from "./helpers/combat.js";
+import { FabulaUltimaCombatHud, FabulaUltimaCombatTracker } from "./helpers/combat.js";
 import { FabulaUltimaGroupRoll } from "./helpers/groupRoll/groupRoll.mjs";
 import { LongNamePlayerList } from "./sheets/longname-player-list.mjs";
 
@@ -42,6 +42,7 @@ Hooks.once('init', async function() {
   CONFIG.Actor.documentClass = FabulaUltimaActor;
   CONFIG.Item.documentClass = FabulaUltimaItem;
   CONFIG.ui.players = LongNamePlayerList;
+  CONFIG.ui.combat = FabulaUltimaCombatTracker;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
