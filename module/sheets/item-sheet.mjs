@@ -48,6 +48,8 @@ export class FabulaUltimaItemSheet extends ItemSheet {
 
     if (context.item.type === "feature") {
       context = this.getFeatureData(context);
+    } else if (context.item.type === "skilloption") {
+      context = this.getSkilloptionData(context);
     } else if (context.item.type === "weapon") {
       context = this.getWeaponData(context);
     } else if (context.item.type === "spell") {
@@ -65,6 +67,12 @@ export class FabulaUltimaItemSheet extends ItemSheet {
     context.data.costResources = CONFIG.FABULAULTIMA.costResources;
     context.data.timings = CONFIG.FABULAULTIMA.timings;
     context.data.actionTypes = CONFIG.FABULAULTIMA.actionTypes;
+
+    return context;
+  }
+
+  getSkilloptionData(context) {
+    context.data.costResources = CONFIG.FABULAULTIMA.costResources;
 
     return context;
   }

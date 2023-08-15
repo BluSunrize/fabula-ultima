@@ -1,0 +1,57 @@
+<div class="skilloption-card" data-actor-id="{{actor._id}}" data-item-id="{{#if overrideId}}{{overrideId}}{{else}}{{skilloption._id}}{{/if}}"
+    {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}}>
+    
+    <header class="card-header flexrow">
+        <img src="{{skilloption.img}}" title="{{skilloption.name}}" width="36" height="36" />
+        <h3 class="item-name">
+          {{#if prename}}{{prename}}: {{/if}}{{skilloption.name}}{{#if postname}}: {{postname}}{{/if}}
+          <br>
+          {{skilloption.system.category}}
+        </h3>
+    </header>
+
+    <div class="card-info">
+      {{#if (ne skilloption.system.cost.amount 0)}}
+      <div class="flexrow">
+        <label style="font-weight: bold;">{{localize "FABULAULTIMA.Cost"}}</label>
+        {{skilloption.system.cost.amount}} {{skilloption.system.cost.resourceLoc}}
+      </div>
+      {{/if}}
+      {{#if (ne skilloption.system.trigger "")}}
+      <div class="flexrow">
+        <label style="font-weight: bold;">{{localize "FABULAULTIMA.Trigger"}}</label>
+        {{skilloption.system.trigger}}
+      </div>
+      {{/if}}
+    </div>
+
+    <div class="card-content">
+        {{{skilloption.system.description}}}
+    </div>
+
+    {{#if formula}}
+    <div class="card-result dice-roll">
+        <div class="dice-result">
+            <div class="dice-formula">{{formula}}</div>
+            {{#if dice.length}}
+                <div class="dice-tooltip" style="display: block;">
+                    <section class="tooltip-part">
+                        {{#each dice as |die id|}}
+                            <div class="dice">
+                                <ol class="dice-rolls">
+                                    {{#each die.results as |result id|}}
+                                        <li class="roll die d{{die.faces}} {{#if result.discarded}}discarded{{/if}} {{#if (eq result.result 1)}}min{{/if}} {{#if (eq result.result die.faces)}}max{{/if}}">{{result.result}}</li>
+                                    {{/each}}
+                                </ol>
+                            </div>
+                        {{/each}}
+                    </section>
+                </div>
+            {{/if}}
+            <h4 class="dice-total {{#if isCritical}}critical{{/if}} {{#if isFumble}}fumble{{/if}}">
+                {{total}} {{#if custom}}{{custom}}{{/if}}
+            </h4>
+        </div>
+    </div>
+    {{/if}}
+</div>

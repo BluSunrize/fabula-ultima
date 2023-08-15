@@ -154,6 +154,58 @@ export class FabulaUltimaActor extends Actor {
     return ChatMessage.create(chatData);
   }
 
+  async rollSkilloption(skilloption) {
+    // localize resource
+    skilloption.system.cost.resourceLoc = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[skilloption.system.cost.resource]);
+
+    const templateData = {
+      actor: this,
+      skilloption: skilloption,
+      type: this.type,
+      flavor: skilloption.name,
+    };
+
+    let roll = undefined;
+
+    if (skilloption.system.formula) {
+      roll = await new Roll(skilloption.system.formula, this.getRollData()).roll({ async: true });
+      const d = roll.dice;
+      const isFumble = d.every(die => die.total === 1);
+      const isCrit = d.every(die => die.total === d[0].total && die.total !== 1 && die.total > 5); // TODO frenesia
+      templateData["formula"] = skilloption.system.formula;
+      templateData["total"] = roll.total;
+      templateData["dice"] = roll.dice;
+      templateData["isCritical"] = isCrit;
+      templateData["isFumble"] = isFumble;
+    }
+
+    const template = "systems/fabulaultima/templates/chat/skilloption-card.html";
+    const html = await renderTemplate(template, templateData);
+
+    let token = this.token;
+    if (!token) {
+      token = this.getActiveTokens()[0];
+    }
+
+    const chatData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        token: this.token ? this.token.id : null,
+        alias: this.token ? this.token.name : this.name,
+        actor: this.id
+      }
+    };
+    if (roll) {
+      chatData['roll'] = roll;
+      chatData['rollMode'] = game.settings.get("core", "rollMode");
+      chatData['type'] = CONST.CHAT_MESSAGE_TYPES.ROLL;
+    }
+
+    return ChatMessage.create(chatData);
+  }
+
   async rollSpell(spell) {
 
     const templateData = {

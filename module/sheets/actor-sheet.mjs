@@ -234,6 +234,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     const armor = [];
     const accessories = [];
     const classes = [];
+    const skilloptions = {};
     const other = [];
     const spells = [];
     const arcana = [];
@@ -308,6 +309,15 @@ export class FabulaUltimaActorSheet extends ActorSheet {
         i.spells = [];
         classes.push(i);
       }
+      else if (i.type === 'skilloption') {
+        let option_category = i.data.category || '';
+        if (!skilloptions.hasOwnProperty(option_category)) {
+          skilloptions[option_category] = [];
+        }
+        // localize resources for display
+        i.data.cost.resourceLoc = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.data.cost.resource]);
+        skilloptions[option_category].push(i);
+      }
       else if (i.type === 'bond') {
         bonds.push(i);
       }
@@ -365,6 +375,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     context.limits = limits;
 
     context.classes = classes;
+    context.skilloptions = skilloptions;
   }
 
   _updateCharacterLevel(context) {
@@ -747,6 +758,8 @@ export class FabulaUltimaActorSheet extends ActorSheet {
           return item.roll();
       } else if (dataset.rollType === "feature") {
         return this.actor.rollFeature(item);
+      } else if (dataset.rollType === "skilloption") {
+        return this.actor.rollSkilloption(item);
       } else if (dataset.rollType === "spell") {
         return this.actor.rollSpell(item);
       } else if (dataset.rollType === "weapon") {

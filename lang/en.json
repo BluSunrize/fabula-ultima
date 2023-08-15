@@ -165,7 +165,8 @@
   "FABULAULTIMA.Consumables": "Consumables",
 
   "FABULAULTIMA.Affinities": "Affinities",
-  "FABULAULTIMA.Features": "Classes & Features",
+  "FABULAULTIMA.Features": "Classes & Skills",
+  "FABULAULTIMA.SkillOptions": "Skill Options",
   "FABULAULTIMA.Name": "Name",
   "FABULAULTIMA.Level": "Level",
   "FABULAULTIMA.DeleteClass": "Remove Class",
@@ -174,6 +175,7 @@
   "FABULAULTIMA.Target": "Target",
   "FABULAULTIMA.Duration": "Duration",
   "FABULAULTIMA.Restore": "Restore",
+  "FABULAULTIMA.Trigger": "Trigger",
 
   "FABULAULTIMA.Weapons": "Weapons",
   "FABULAULTIMA.EquipTwoHanded": "Two Handed",
