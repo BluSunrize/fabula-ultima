@@ -51,7 +51,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       this._prepareItems(context);
       await this._updateAbilitiesStatusAffinities(context);
       await this._updateCharacterAttributes(context);
-      await this._updateEquipmentBasedStats(context);
     }
 
     // Prepare Group items
@@ -97,7 +96,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     this._updateCharacterLevel(context);
     this._updateCharacterPoints(context);
     this._updateCharacterAttributes(context);
-    await this._updateEquipmentBasedStats(context);
   }
 
   async _updateAbilitiesStatusAffinities(context) {
@@ -144,79 +142,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       }
     }
     context.system.orderedAffinities = affinities;
-  }
-
-  async _updateEquipmentBasedStats(context) {
-    context.system.initiativeBonus = 0;
-    context.system.defense = parseInt(context.system.abilities.dex.value);
-    context.system.magicDefense = parseInt(context.system.abilities.int.value);
-
-    // bonuses on enemies
-    if (context.system.defenseBonus) {
-      context.system.defense += parseInt(context.system.defenseBonus);
-    }
-    if (context.system.magicDefenseBonus) {
-      context.system.magicDefense += parseInt(context.system.magicDefenseBonus);
-    }
-
-    if (context.system.equipped.armor !== "") {
-      const armor = this.actor.items.get(context.system.equipped.armor);
-      if (armor) {
-        context.system.initiativeBonus = parseInt(armor.system.initiativeBonus);
-        
-        if (armor.system.defenseFormula.includes("@")) {
-          const roll = await new Roll(armor.system.defenseFormula, this.actor.getRollData()).roll({async: false});
-          console.log(roll);
-          context.system.defense = parseInt(roll.total);
-        } else {
-          context.system.defense = parseInt(armor.system.defenseFormula);
-        }
-
-        if (armor.system.magicDefenseFormula.includes("@")) {
-          const roll = await new Roll(armor.system.magicDefenseFormula, this.actor.getRollData()).roll({async: false});
-          context.system.magicDefense = parseInt(roll.total);
-        } else {
-          context.system.magicDefense = parseInt(armor.system.magicDefenseFormula);
-        }
-      }
-    }
-
-    let mainHand;
-    if (context.system.equipped.mainHand !== "") {
-      mainHand = this.actor.items.get(context.system.equipped.mainHand);
-      if (mainHand) {
-        if (mainHand.system.quality) {
-          context.system.initiativeBonus += parseInt(mainHand.system.quality.initiativeBonus);
-          context.system.defense += parseInt(mainHand.system.quality.defenseBonus);
-          context.system.magicDefense += parseInt(mainHand.system.quality.magicDefenseBonus);
-        }
-
-        context.system.defense += parseInt(mainHand.system.defenseBonus);
-        context.system.magicDefense += parseInt(mainHand.system.magicDefenseBonus);
-      }
-    }
-
-    if (context.system.equipped.offHand !== "") {
-      const offHand = this.actor.items.get(context.system.equipped.offHand);
-      if (offHand && mainHand && mainHand.id !== offHand.id) {
-        if (offHand.system.quality) {
-          context.system.initiativeBonus += parseInt(offHand.system.quality.initiativeBonus);
-          context.system.defense += parseInt(offHand.system.quality.defenseBonus);
-          context.system.magicDefense += parseInt(offHand.system.quality.magicDefenseBonus);
-        }
-
-        context.system.defense += parseInt(offHand.system.defenseBonus);
-        context.system.magicDefense += parseInt(offHand.system.magicDefenseBonus);
-      }
-    }
-
-    // handle all equipped accessories
-    for (let item of this.actor.items)
-      if (item.type === 'accessory' && item.system.isEquipped && item.system.quality) {
-        context.system.initiativeBonus += parseInt(item.system.quality.initiativeBonus);
-        context.system.defense += parseInt(item.system.quality.defenseBonus);
-        context.system.magicDefense += parseInt(item.system.quality.magicDefenseBonus);
-      }
   }
 
   /**

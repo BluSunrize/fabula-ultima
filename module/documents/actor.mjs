@@ -17,6 +17,80 @@ export class FabulaUltimaActor extends Actor {
   prepareBaseData() {
     // Data modifications in this step occur before processing embedded
     // documents or derived data.
+    const actorData = this.system;
+
+
+    // Calculate initiative & defenses now, so that active effects can modify them
+    actorData.initiativeBonus = 0;
+    actorData.defense = parseInt(actorData.abilities.dex.value);
+    actorData.magicDefense = parseInt(actorData.abilities.int.value);
+
+    // bonuses on enemies
+    if (actorData.defenseBonus) {
+      actorData.defense += parseInt(actorData.defenseBonus);
+    }
+    if (actorData.magicDefenseBonus) {
+      actorData.magicDefense += parseInt(actorData.magicDefenseBonus);
+    }
+
+    if (actorData.equipped.armor !== "") {
+      const armor = this.items.get(actorData.equipped.armor);
+      if (armor) {
+        actorData.initiativeBonus = parseInt(armor.system.initiativeBonus);
+        
+        if (armor.system.defenseFormula.includes("@")) {
+          const roll = new Roll(armor.system.defenseFormula, this.getRollData()).roll({async: false});
+          actorData.defense = parseInt(roll.total);
+        } else {
+          actorData.defense = parseInt(armor.system.defenseFormula);
+        }
+
+        if (armor.system.magicDefenseFormula.includes("@")) {
+          const roll = new Roll(armor.system.magicDefenseFormula, this.getRollData()).roll({async: false});
+          actorData.magicDefense = parseInt(roll.total);
+        } else {
+          actorData.magicDefense = parseInt(armor.system.magicDefenseFormula);
+        }
+      }
+    }
+
+    let mainHand;
+    if (actorData.equipped.mainHand !== "") {
+      mainHand = this.items.get(actorData.equipped.mainHand);
+      if (mainHand) {
+        if (mainHand.system.quality) {
+          actorData.initiativeBonus += parseInt(mainHand.system.quality.initiativeBonus);
+          actorData.defense += parseInt(mainHand.system.quality.defenseBonus);
+          actorData.magicDefense += parseInt(mainHand.system.quality.magicDefenseBonus);
+        }
+
+        actorData.defense += parseInt(mainHand.system.defenseBonus);
+        actorData.magicDefense += parseInt(mainHand.system.magicDefenseBonus);
+      }
+    }
+
+    if (actorData.equipped.offHand !== "") {
+      const offHand = this.items.get(actorData.equipped.offHand);
+      if (offHand && mainHand && mainHand.id !== offHand.id) {
+        if (offHand.system.quality) {
+          actorData.initiativeBonus += parseInt(offHand.system.quality.initiativeBonus);
+          actorData.defense += parseInt(offHand.system.quality.defenseBonus);
+          actorData.magicDefense += parseInt(offHand.system.quality.magicDefenseBonus);
+        }
+
+        actorData.defense += parseInt(offHand.system.defenseBonus);
+        actorData.magicDefense += parseInt(offHand.system.magicDefenseBonus);
+      }
+    }
+
+    // handle all equipped accessories
+    for (let item of this.items)
+      if (item.type === 'accessory' && item.system.isEquipped && item.system.quality) {
+        actorData.initiativeBonus += parseInt(item.system.quality.initiativeBonus);
+        actorData.defense += parseInt(item.system.quality.defenseBonus);
+        actorData.magicDefense += parseInt(item.system.quality.magicDefenseBonus);
+      }
+
   }
 
   /**
