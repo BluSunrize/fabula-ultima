@@ -168,7 +168,7 @@ export class FabulaUltimaActor extends Actor {
   }
 
   async initiativeRoll(bondBonus = 0) {
-    return this.roll("dex", "int", bondBonus + this.getInitiativeBonus(), "FABULAULTIMA.InitiativeTest");
+    return this.roll("dex", "int", bondBonus + this.system.initiativeBonus, "FABULAULTIMA.InitiativeTest");
   }
 
   async roll(firstAbility, secondAbility, bonus = 0, label = "FABULAULTIMA.GenericTest") {
@@ -629,43 +629,6 @@ export class FabulaUltimaActor extends Actor {
     }
 
     return false;
-  }
-
-  getInitiativeBonus() {
-    let bonus = 0;
-
-    if (this.system.equipped.armor !== "") {
-      const armor = this.items.get(this.system.equipped.armor);
-      if (armor) {
-        bonus += parseInt(armor.system.initiativeBonus);
-      }
-    }
-
-    let mainHand;
-    if (this.system.equipped.mainHand !== "") {
-      mainHand = this.items.get(this.system.equipped.mainHand);
-      if (mainHand) {
-        if (mainHand.system.quality) {
-          bonus += parseInt(mainHand.system.quality.initiativeBonus);
-        }
-      }
-    }
-
-    if (this.system.equipped.offHand !== "") {
-      const offHand = this.items.get(this.system.equipped.offHand);
-      if (offHand && mainHand && mainHand.id !== offHand.id) {
-        if (offHand.system.quality) {
-          bonus += parseInt(offHand.system.quality.initiativeBonus);
-        }
-      }
-    }
-
-    for (let item of this.system.items)
-      if (item.type === 'accessory' && item.system.isEquipped && item.system.quality) {
-        bonus += parseInt(item.system.quality.initiativeBonus);
-      }
-
-    return bonus;
   }
 
   getBaseRollFormula(firstAbility, secondAbility, bonus = 0) {
