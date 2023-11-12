@@ -20,7 +20,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
 
   /** @override */
   get template() {
-    return `systems/fabulaultima/templates/actor/actor-${this.actor.data.type}-sheet.html`;
+    return `systems/fabulaultima/templates/actor/actor-${this.actor.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -162,21 +162,21 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     if (context.system.equipped.armor !== "") {
       const armor = this.actor.items.get(context.system.equipped.armor);
       if (armor) {
-        context.system.initiativeBonus = parseInt(armor.data.data.initiativeBonus);
+        context.system.initiativeBonus = parseInt(armor.system.initiativeBonus);
         
-        if (armor.data.data.defenseFormula.includes("@")) {
-          const roll = await new Roll(armor.data.data.defenseFormula, this.actor.getRollData()).roll();
+        if (armor.system.defenseFormula.includes("@")) {
+          const roll = await new Roll(armor.system.defenseFormula, this.actor.getRollData()).roll({async: false});
           console.log(roll);
           context.system.defense = parseInt(roll.total);
         } else {
-          context.system.defense = parseInt(armor.data.data.defenseFormula);
+          context.system.defense = parseInt(armor.system.defenseFormula);
         }
 
-        if (armor.data.data.magicDefenseFormula.includes("@")) {
-          const roll = await new Roll(armor.data.data.magicDefenseFormula, this.actor.getRollData()).roll();
+        if (armor.system.magicDefenseFormula.includes("@")) {
+          const roll = await new Roll(armor.system.magicDefenseFormula, this.actor.getRollData()).roll({async: false});
           context.system.magicDefense = parseInt(roll.total);
         } else {
-          context.system.magicDefense = parseInt(armor.data.data.magicDefenseFormula);
+          context.system.magicDefense = parseInt(armor.system.magicDefenseFormula);
         }
       }
     }
@@ -185,37 +185,37 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     if (context.system.equipped.mainHand !== "") {
       mainHand = this.actor.items.get(context.system.equipped.mainHand);
       if (mainHand) {
-        if (mainHand.data.data.quality) {
-          context.system.initiativeBonus += parseInt(mainHand.data.data.quality.initiativeBonus);
-          context.system.defense += parseInt(mainHand.data.data.quality.defenseBonus);
-          context.system.magicDefense += parseInt(mainHand.data.data.quality.magicDefenseBonus);
+        if (mainHand.system.quality) {
+          context.system.initiativeBonus += parseInt(mainHand.system.quality.initiativeBonus);
+          context.system.defense += parseInt(mainHand.system.quality.defenseBonus);
+          context.system.magicDefense += parseInt(mainHand.system.quality.magicDefenseBonus);
         }
 
-        context.system.defense += parseInt(mainHand.data.data.defenseBonus);
-        context.system.magicDefense += parseInt(mainHand.data.data.magicDefenseBonus);
+        context.system.defense += parseInt(mainHand.system.defenseBonus);
+        context.system.magicDefense += parseInt(mainHand.system.magicDefenseBonus);
       }
     }
 
     if (context.system.equipped.offHand !== "") {
       const offHand = this.actor.items.get(context.system.equipped.offHand);
       if (offHand && mainHand && mainHand.id !== offHand.id) {
-        if (offHand.data.data.quality) {
-          context.system.initiativeBonus += parseInt(offHand.data.data.quality.initiativeBonus);
-          context.system.defense += parseInt(offHand.data.data.quality.defenseBonus);
-          context.system.magicDefense += parseInt(offHand.data.data.quality.magicDefenseBonus);
+        if (offHand.system.quality) {
+          context.system.initiativeBonus += parseInt(offHand.system.quality.initiativeBonus);
+          context.system.defense += parseInt(offHand.system.quality.defenseBonus);
+          context.system.magicDefense += parseInt(offHand.system.quality.magicDefenseBonus);
         }
 
-        context.system.defense += parseInt(offHand.data.data.defenseBonus);
-        context.system.magicDefense += parseInt(offHand.data.data.magicDefenseBonus);
+        context.system.defense += parseInt(offHand.system.defenseBonus);
+        context.system.magicDefense += parseInt(offHand.system.magicDefenseBonus);
       }
     }
 
     // handle all equipped accessories
     for (let item of this.actor.items)
-      if (item.type === 'accessory' && item.data.data.isEquipped && item.data.data.quality) {
-        context.system.initiativeBonus += parseInt(item.data.data.quality.initiativeBonus);
-        context.system.defense += parseInt(item.data.data.quality.defenseBonus);
-        context.system.magicDefense += parseInt(item.data.data.quality.magicDefenseBonus);
+      if (item.type === 'accessory' && item.system.isEquipped && item.system.quality) {
+        context.system.initiativeBonus += parseInt(item.system.quality.initiativeBonus);
+        context.system.defense += parseInt(item.system.quality.defenseBonus);
+        context.system.magicDefense += parseInt(item.system.quality.magicDefenseBonus);
       }
   }
 
@@ -248,11 +248,11 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       if (i.type === 'weapon') {
         i.formula = this.actor.getItemFormula(i);
  
-        i.data.category = game.i18n.localize(CONFIG.FABULAULTIMA.weaponCategories[i.data.category]);
-        i.data.type = game.i18n.localize(CONFIG.FABULAULTIMA.weaponTypes[i.data.type]);
-        i.data.damage.type = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[i.data.damage.type]);
+        i.system.category = game.i18n.localize(CONFIG.FABULAULTIMA.weaponCategories[i.system.category]);
+        i.system.type = game.i18n.localize(CONFIG.FABULAULTIMA.weaponTypes[i.system.type]);
+        i.system.damage.type = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[i.system.damage.type]);
 
-        if (i.data.twoHanded) {
+        if (i.system.twoHanded) {
           if (context.system.equipped.mainHand === i._id) {
             i.status = game.i18n.localize("FABULAULTIMA.EquipTwoHanded");
             context.system.equipped.offHand = context.system.equipped.mainHand;
@@ -283,8 +283,8 @@ export class FabulaUltimaActorSheet extends ActorSheet {
         shields.push(i);
       }
       else if (i.type === "armor") {
-        i.data.defenseFormula = this.actor.getArmorFormula(i, false);
-        i.data.magicDefenseFormula = this.actor.getArmorFormula(i, true);
+        i.system.defenseFormula = this.actor.getArmorFormula(i, false);
+        i.system.magicDefenseFormula = this.actor.getArmorFormula(i, true);
 
         if (context.system.equipped.armor === i._id) {
           i.status = game.i18n.localize("FABULAULTIMA.Equipped");
@@ -310,12 +310,12 @@ export class FabulaUltimaActorSheet extends ActorSheet {
         classes.push(i);
       }
       else if (i.type === 'skilloption') {
-        let option_category = i.data.category || '';
+        let option_category = i.system.category || '';
         if (!skilloptions.hasOwnProperty(option_category)) {
           skilloptions[option_category] = [];
         }
         // localize resources for display
-        i.data.cost.resourceLoc = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.data.cost.resource]);
+        i.system.cost.resourceLoc = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.system.cost.resource]);
         skilloptions[option_category].push(i);
       }
       else if (i.type === 'bond') {
@@ -341,20 +341,20 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
       if (i.type === 'feature') { 
-        i.data.cost.resource = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.data.cost.resource]);
+        i.system.cost.resource = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.system.cost.resource]);
 
-        const cls = i.data.class;
-        const c = classes.find(cl => cl.data.abbr === cls);
+        const cls = i.system.class;
+        const c = classes.find(cl => cl.system.abbr === cls);
         if (c) {
           c.skills.push(i);
         }
       }
       // Append to spells.
       else if (i.type === 'spell') {
-        i.data.cost.resource = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.data.cost.resource]);
+        i.system.cost.resource = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[i.system.cost.resource]);
 
-        const cls = i.data.class;
-        const c = classes.find(cl => cl.data.abbr === cls);
+        const cls = i.system.class;
+        const c = classes.find(cl => cl.system.abbr === cls);
         if (c) {
           c.spells.push(i);
         }
@@ -382,7 +382,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     let level = 0;
 
     for (let c of context.classes) {
-      level += c.data.level;
+      level += c.system.level;
     }
 
     context.system.attributes.level.value = level;
@@ -398,14 +398,14 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     let startingInventory = 6;
 
     for (let c of context.classes) {
-      startingHealth += Number(c.data.healthBonus);
-      startingMind += Number(c.data.mindBonus);
-      startingInventory += Number(c.data.inventoryBonus);
+      startingHealth += Number(c.system.healthBonus);
+      startingMind += Number(c.system.mindBonus);
+      startingInventory += Number(c.system.inventoryBonus);
 
       for (let f of c.skills) {
-        startingHealth += Number(f.data.passive.hpBonus) * f.data.level;
-        startingMind += Number(f.data.passive.mpBonus) * f.data.level;
-        startingInventory += Number(f.data.passive.ipBonus);
+        startingHealth += Number(f.system.passive.hpBonus) * f.system.level;
+        startingMind += Number(f.system.passive.mpBonus) * f.system.level;
+        startingInventory += Number(f.system.passive.ipBonus);
       }
     }
 
@@ -475,15 +475,15 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
 
-      const equipped = this.actor.items.get(this.actor.data.data.equipped.mainHand);
-      const other = this.actor.items.get(this.actor.data.data.equipped.offHand);
+      const equipped = this.actor.items.get(this.actor.system.equipped.mainHand);
+      const other = this.actor.items.get(this.actor.system.equipped.offHand);
       const values = {
         "system.equipped.mainHand": item.id
       };
 
-      if (item.data.data.twoHanded) {
+      if (item.system.twoHanded) {
         values["system.equipped.offHand"] = item.id;
-      } else if (equipped && equipped.data.data.twoHanded) {
+      } else if (equipped && equipped.system.twoHanded) {
         values["system.equipped.offHand"] = "";
       }
       
@@ -497,15 +497,15 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
 
-      const equipped = this.actor.items.get(this.actor.data.data.equipped.offHand);
-      const other = this.actor.items.get(this.actor.data.data.equipped.mainHand);
+      const equipped = this.actor.items.get(this.actor.system.equipped.offHand);
+      const other = this.actor.items.get(this.actor.system.equipped.mainHand);
       const values = {
         "system.equipped.offHand": item.id
       };
 
-      if (item.data.data.twoHanded) {
+      if (item.system.twoHanded) {
         values["system.equipped.mainHand"] = item.id;
-      } else if (equipped && equipped.data.data.twoHanded) {
+      } else if (equipped && equipped.system.twoHanded) {
         values["system.equipped.mainHand"] = "";
       } 
 
@@ -544,7 +544,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("itemId"));
 
-      const gives = this.actor.items.filter(i => i.data.data.passive.givesAdditionalAccessorySlot);
+      const gives = this.actor.items.filter(i => i.system.passive.givesAdditionalAccessorySlot);
       if (gives && gives.length) {
         const values = {
           "system.equipped.accessory2": item.id
@@ -605,7 +605,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     html.find('.class-level-sub').click(async ev => {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("classId"));
-      const level = item.data.data.level;
+      const level = item.system.level;
       if (level > 1)
         await item.update({
           "system.level": level - 1
@@ -615,7 +615,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.items.get(li.data("classId"));
       await item.update({
-        "system.level": item.data.data.level + 1
+        "system.level": item.system.level + 1
       });
     });
 
@@ -685,12 +685,12 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     if (item.type === "class" && other.length > 0 && !sameActor) {
       // increment level if same class exists
       other[0].update({
-        "system.level": other[0].data.data.level + 1
+        "system.level": other[0].system.level + 1
       });
     } else if (item.type === "feature" && other.length > 0 && !sameActor) {
       // increment level if same feature exists
       other[0].update({
-        "system.level": other[0].data.data.level + 1
+        "system.level": other[0].system.level + 1
       });
     } else {
       // this is a re-implementation of vanilla logic which differentiates

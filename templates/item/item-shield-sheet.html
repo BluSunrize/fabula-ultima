@@ -17,7 +17,7 @@
   
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-        {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+        {{editor data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
       </div>
   
       {{!-- Attributes Tab --}}
@@ -44,7 +44,7 @@
         <br>
         <span class="resource-label">{{localize "FABULAULTIMA.Quality"}}</span>
         <div class="resource-content flexrow flex-center flex-between">
-            {{editor content=data.quality.description target="data.quality.description" rollData=rollData button=true owner=owner editable=editable}}
+            {{editor data.quality.description target="data.quality.description" rollData=rollData button=true owner=owner editable=editable}}
         </div>
         
         <div class="resource-content flexrow flex-center flex-between">

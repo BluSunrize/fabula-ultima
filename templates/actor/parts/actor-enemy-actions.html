@@ -17,9 +17,9 @@
         </div>
         <h4>{{weapon.name}}</h4>
       </div>
-      <div class="item-type item-prop">{{weapon.data.type}}</div>
+      <div class="item-type item-prop">{{weapon.system.type}}</div>
       <div class="item-formula item-prop">{{weapon.formula}}</div>
-      <div class="item-damage item-prop">【{{localize "FABULAULTIMA.HR"}} + {{weapon.data.damage.bonus}}】 {{weapon.data.damage.type}}</div>
+      <div class="item-damage item-prop">【{{localize "FABULAULTIMA.HR"}} + {{weapon.system.damage.bonus}}】 {{weapon.system.damage.type}}</div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="{{localize "FABULAULTIMA.Delete"}}"><i class="fas fa-trash"></i></a>
@@ -47,7 +47,7 @@
         </div>
         <h4>{{feat.name}}</h4>
       </div>
-      <div class="item-description item-prop flexlarge">{{{feat.data.description}}}</div>
+      <div class="item-description item-prop flexlarge">{{{feat.system.description}}}</div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="{{localize "FABULAULTIMA.Delete"}}"><i class="fas fa-trash"></i></a>

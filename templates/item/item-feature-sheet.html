@@ -17,7 +17,7 @@
 
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
-      {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+      {{editor data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 
     {{!-- Attributes Tab --}}
@@ -28,7 +28,7 @@
         <label for="data.class" class="resource-label long">{{localize "FABULAULTIMA.Class"}}</label>
         <select name="data.class" id="class-select">
           {{#each data.classes as |class key|}}
-            {{option class.data.data.abbr class.name ../data.class}}
+            {{option class.system.abbr class.name ../data.class}}
           {{/each}}
         </select>
       </div>
