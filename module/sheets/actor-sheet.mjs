@@ -38,7 +38,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
 
     // Add the actor's data to context.system for easier access, as well as flags.
     context.system = actorData;
-    context.flags = actorData.flags;
+    context.flags = context.actor.flags;
 
     // Prepare character data and items.
     if (context.actor.type == 'character') {

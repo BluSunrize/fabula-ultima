@@ -22,7 +22,7 @@ export class FabulaUltimaItemSheet extends ItemSheet {
 
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.html`.
-    return `${path}/item-${this.item.data.type}-sheet.html`;
+    return `${path}/item-${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -32,9 +32,6 @@ export class FabulaUltimaItemSheet extends ItemSheet {
     // Retrieve base data structure.
     let context = super.getData();
 
-    // Use a safe clone of the item data for further operations.
-    const itemData = context.item.data;
-
     // Retrieve the roll data for TinyMCE editors.
     context.rollData = {};
     let actor = this.object?.parent ?? null;
@@ -43,8 +40,8 @@ export class FabulaUltimaItemSheet extends ItemSheet {
     }
 
     // Add the actor's data to context.data for easier access, as well as flags.
-    context.data = itemData.data;
-    context.flags = itemData.flags;
+    context.data = context.item.system;
+    context.flags = context.item.flags;
 
     if (context.item.type === "feature") {
       context = this.getFeatureData(context);
@@ -109,7 +106,7 @@ export class FabulaUltimaItemSheet extends ItemSheet {
   _activateFeatureListeners(html, context) {
     if (context.item.type === "feature") {
       html.find('#class-select').on('change', function () {
-        context.item.data.class = $('#class-select').val();
+        context.data.class = $('#class-select').val();
       });
     } else if (context.item.type === "weapon") {
       /*html.find('#first-ability').on('change', function () {
