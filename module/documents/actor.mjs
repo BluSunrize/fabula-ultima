@@ -37,16 +37,16 @@ export class FabulaUltimaActor extends Actor {
       const armor = this.items.get(actorData.equipped.armor);
       if (armor) {
         actorData.initiativeBonus = parseInt(armor.system.initiativeBonus);
-        
+
         if (armor.system.defenseFormula.includes("@")) {
-          const roll = new Roll(armor.system.defenseFormula, this.getRollData()).roll({async: false});
+          const roll = new Roll(armor.system.defenseFormula, this.getRollData()).roll({ async: false });
           actorData.defense = parseInt(roll.total);
         } else {
           actorData.defense = parseInt(armor.system.defenseFormula);
         }
 
         if (armor.system.magicDefenseFormula.includes("@")) {
-          const roll = new Roll(armor.system.magicDefenseFormula, this.getRollData()).roll({async: false});
+          const roll = new Roll(armor.system.magicDefenseFormula, this.getRollData()).roll({ async: false });
           actorData.magicDefense = parseInt(roll.total);
         } else {
           actorData.magicDefense = parseInt(armor.system.magicDefenseFormula);
@@ -83,13 +83,30 @@ export class FabulaUltimaActor extends Actor {
       }
     }
 
-    // handle all equipped accessories
-    for (let item of this.items)
+    for (let item of this.items) {
+      let initBonus, defBonus, mdefBonus;
+      // handle all equipped accessories
       if (item.type === 'accessory' && item.system.isEquipped && item.system.quality) {
-        actorData.initiativeBonus += parseInt(item.system.quality.initiativeBonus);
-        actorData.defense += parseInt(item.system.quality.defenseBonus);
-        actorData.magicDefense += parseInt(item.system.quality.magicDefenseBonus);
+        initBonus = Number(item.system.quality.initiativeBonus);
+        defBonus = Number(item.system.quality.defenseBonus);
+        mdefBonus = Number(item.system.quality.magicDefenseBonus);
       }
+      // handle bonuses from features
+      if (item.type === 'feature') {
+        const level = Number(item.system.level);
+        if (isNaN(level))
+          continue;
+        initBonus = Number(item.system.passive.initiativeBonus) * level;
+        defBonus = Number(item.system.passive.defenseBonus) * level;
+        mdefBonus = Number(item.system.passive.magicDefenseBonus) * level;
+      }
+      if (!isNaN(initBonus))
+        actorData.initiativeBonus += initBonus;
+      if (!isNaN(defBonus))
+        actorData.defense += defBonus;
+      if (!isNaN(mdefBonus))
+        actorData.magicDefense += mdefBonus;
+    }
 
   }
 
@@ -315,7 +332,7 @@ export class FabulaUltimaActor extends Actor {
       templateData["total"] = roll.total;
       templateData["dice"] = roll.dice;
       const damageBonus = parseInt(spell.system.damage.bonus);
-      if(spell.system.damage.type != 'none' || damageBonus) {
+      if (spell.system.damage.type != 'none' || damageBonus) {
         templateData["damage"] = maxVal + damageBonus;
         templateData["damageType"] = spell.system.damage.type;
         templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
