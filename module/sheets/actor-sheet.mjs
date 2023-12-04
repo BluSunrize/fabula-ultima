@@ -480,35 +480,39 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       return;
     });
 
-    html.find('.item-summonArcanum').click(async ev => {
-      const li = $(ev.currentTarget).parents(".item");
-      const item = this.actor.items.get(li.data("itemId"));
-      const values = {
-        "system.isSummoned": true
-      };
-      // show in chat
-      Dialog.confirm({
-        title: game.i18n.localize('FABULAULTIMA.ArcanaMergeInChat'),
-        yes: () => this.actor.rollArcanum(item, true, false),
-        no: () => { },
-        defaultYes: false
-      });
-      await item.update(values);
+    // Handle arcanum summoning / dismissing, the context menu is on a unique event-trigger
+    // which is in turn only performed by the roll button
+    html.find('li.arcanum a.rollable').click(async ev => {
+      ev.stopPropagation();
+      $(ev.currentTarget).parents('li.arcanum').trigger('arcanum_menu');
     });
-    html.find('.item-dismissArcanum').click(async ev => {
-      const li = $(ev.currentTarget).parents(".item");
-      const item = this.actor.items.get(li.data("itemId"));
-      const values = {
-        "system.isSummoned": false
-      };
-      // show in chat
-      Dialog.confirm({
-        title: game.i18n.localize('FABULAULTIMA.ArcanaDismissInChat'),
-        yes: () => this.actor.rollArcanum(item, false, true),
-        no: () => { },
-        defaultYes: false
-      });
-      await item.update(values);
+    new ContextMenu(html, 'li.arcanum', [
+      {
+        name: 'FABULAULTIMA.Merge',
+        icon: '<i class="fa-solid fa-dragon"></i>',
+        callback: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          const values = {
+            "system.isSummoned": true
+          };
+          this.actor.rollArcanum(item, true, false);
+          item.update(values);
+        }
+      },
+      {
+        name: 'FABULAULTIMA.Dismiss',
+        icon: '<i class="fa-thin fa-dragon"></i>',
+        callback: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          const values = {
+            "system.isSummoned": false
+          };
+          this.actor.rollArcanum(item, false, true);
+          item.update(values);
+        }
+      }
+    ], {
+      eventName: 'arcanum_menu',
     });
 
     // Delete Inventory Item

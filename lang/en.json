@@ -211,9 +211,6 @@
   "FABULAULTIMA.Merge": "Merge",
   "FABULAULTIMA.Dismiss": "Dismiss",
   "FABULAULTIMA.Summon": "Summon",
-  "FABULAULTIMA.IsSummoned": "Summoned?",
-  "FABULAULTIMA.ArcanaMergeInChat": "Send Merge ability to chat?",
-  "FABULAULTIMA.ArcanaDismissInChat": "Send Dismiss ability to chat?",
 
   "FABULAULTIMA.PlayerTurn": "Player Turn",
   "FABULAULTIMA.EnemyTurn": "Enemy Turn",
