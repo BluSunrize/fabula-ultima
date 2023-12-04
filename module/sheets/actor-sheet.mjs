@@ -495,8 +495,16 @@ export class FabulaUltimaActorSheet extends ActorSheet {
           const values = {
             "system.isSummoned": true
           };
-          this.actor.rollArcanum(item, true, false);
+          this.actor.rollArcanum(item, {showMerge: true});
           item.update(values);
+        }
+      },
+      {
+        name: 'FABULAULTIMA.Pulse',
+        icon: '<i class="fa-solid fa-fire"></i>',
+        callback: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          this.actor.rollArcanum(item, {showPulse: true});
         }
       },
       {
@@ -507,7 +515,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
           const values = {
             "system.isSummoned": false
           };
-          this.actor.rollArcanum(item, false, true);
+          this.actor.rollArcanum(item, {showDismiss: true});
           item.update(values);
         }
       }

@@ -381,13 +381,14 @@ export class FabulaUltimaActor extends Actor {
 
   }
 
-  async rollArcanum(arcanum, showMerge = true, showDismiss = true) {
+  async rollArcanum(arcanum, {showMerge = false, showPulse = false, showDismiss = false}={}) {
     const templateData = {
       actor: this,
       arcanum: arcanum,
       type: this.type,
       flavor: arcanum.name,
       showMerge: showMerge,
+      showPulse: showPulse,
       showDismiss: showDismiss,
     };
 
