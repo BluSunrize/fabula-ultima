@@ -53,7 +53,6 @@
 <ol class="items-list">
   <li class="item flexrow items-header">
     <div class="item-name">{{localize "FABULAULTIMA.Name"}}</div>
-    <div class="item-domains">{{localize "FABULAULTIMA.Domains"}}</div>
     <div class="item-merge flexlarge">{{localize "FABULAULTIMA.Merge"}}</div>
     <div class="item-pulse flexlarge">{{localize "FABULAULTIMA.Pulse"}}</div>
     <div class="item-dismiss flexlarge">{{localize "FABULAULTIMA.Dismiss"}}</div>
@@ -67,13 +66,15 @@
         <div class="item-image">
           <a class="rollable" data-roll-type="arcanum"><img src="{{arcanum.img}}" title="{{arcanum.name}}" width="24" height="24"/></a>
         </div>
-        <h4 class="flexcol">
-          {{arcanum.name}}
-          <br>
-          {{arcanum.system.type}}
-        </h4>
+        <div class="flexcol">
+          <h4>
+            {{arcanum.name}}
+            <br>
+            {{arcanum.system.type}}
+          </h4>
+          <span class="item-domain">{{arcanum.system.domains}}</i>
+        </div>
       </div>
-      <div class="item-domains item-prop">{{arcanum.system.domains}}</div>
       <div class="item-merge item-prop flexlarge">{{{arcanum.system.merge}}}</div>
       <div class="item-pulse item-prop flexlarge">{{{arcanum.system.pulse}}}</div>
       <div class="item-dismiss item-prop flexlarge">{{{arcanum.system.dismiss}}}</div>

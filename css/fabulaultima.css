@@ -855,6 +855,11 @@ input[readonly] {
   animation: clippath 3s infinite linear;
 }
 
+.fabulaultima .item.arcanum .item-domain {
+  margin-top: 10px;
+  font-style: italic;
+}
+
 @keyframes clippath {
 
   0%,
