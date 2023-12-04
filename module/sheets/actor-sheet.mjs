@@ -490,6 +490,10 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       {
         name: 'FABULAULTIMA.Merge',
         icon: '<i class="fa-solid fa-dragon"></i>',
+        condition: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          return !item.system.isSummoned;
+        },
         callback: li => {
           const item = this.actor.items.get(li.data('itemId'));
           const values = {
@@ -502,6 +506,10 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       {
         name: 'FABULAULTIMA.Pulse',
         icon: '<i class="fa-solid fa-fire"></i>',
+        condition: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          return item.system.isSummoned;
+        },
         callback: li => {
           const item = this.actor.items.get(li.data('itemId'));
           this.actor.rollArcanum(item, {showPulse: true});
@@ -510,6 +518,10 @@ export class FabulaUltimaActorSheet extends ActorSheet {
       {
         name: 'FABULAULTIMA.Dismiss',
         icon: '<i class="fa-thin fa-dragon"></i>',
+        condition: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          return item.system.isSummoned;
+        },
         callback: li => {
           const item = this.actor.items.get(li.data('itemId'));
           const values = {
