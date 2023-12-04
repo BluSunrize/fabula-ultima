@@ -311,7 +311,21 @@ export class FabulaUltimaActor extends Actor {
     if (spell.system.isOffensive) {
       // game.i18n.localize("FABULAULTIMA.RollPrecisionTest");
 
-      let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, spell.system.precisionBonus);
+      let precisionBonus = Number(spell.system.precisionBonus);
+      let damageBonus = Number(spell.system.damage.bonus);
+      const features = this.items.filter(i => i.type === "feature");
+      for (const feature of features) {
+        const prcBonus = Number(feature.system.passive.magicPrecisionBonus);
+        const damBonus = Number(feature.system.passive.magicDamageBonus);
+        const level = Number(feature.system.level);
+        if (!this.checkFeatureCondition(feature))
+          continue;
+        if (!isNaN(prcBonus) && !isNaN(level))
+          precisionBonus += (prcBonus * level);
+        if (!isNaN(damBonus) && !isNaN(level))
+          damageBonus += (damBonus * level);
+      }
+      let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, precisionBonus);
 
       roll = await new Roll(formula, this.getRollData()).roll({ async: true });
       const d = roll.dice;
@@ -326,12 +340,11 @@ export class FabulaUltimaActor extends Actor {
       const first = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.firstAbility]);
       const second = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.secondAbility]);
       templateData["formula"] = "【" + first + " + " + second + "】";
-      if (spell.system.precisionBonus != 0) {
-        templateData["formula"] += " + " + spell.system.precisionBonus;
+      if (precisionBonus != 0) {
+        templateData["formula"] += " + " + precisionBonus;
       }
       templateData["total"] = roll.total;
       templateData["dice"] = roll.dice;
-      const damageBonus = parseInt(spell.system.damage.bonus);
       if (spell.system.damage.type != 'none' || damageBonus) {
         templateData["damage"] = maxVal + damageBonus;
         templateData["damageType"] = spell.system.damage.type;

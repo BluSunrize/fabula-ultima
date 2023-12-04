@@ -75,8 +75,10 @@
   "FABULAULTIMA.OpenBonus": "Skill Check Bonus",
   "FABULAULTIMA.MeleePrecisionBonus": "Melee Precision Bonus",
   "FABULAULTIMA.RangedPrecisionBonus": "Ranged Precision Bonus",
+  "FABULAULTIMA.MagicPrecisionBonus": "Magic Precision Bonus",
   "FABULAULTIMA.MeleeDamageBonus":  "Melee Damage Bonus",
   "FABULAULTIMA.RangedDamageBonus": "Ranged Damage Bonus",
+  "FABULAULTIMA.MagicDamageBonus": "Magic Damage Bonus",
   "FABULAULTIMA.Condition": "Condition",
   
   "FABULAULTIMA.IsInitiative": "Is Initiative Check?",
