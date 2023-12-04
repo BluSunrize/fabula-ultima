@@ -75,9 +75,18 @@
           <span class="item-domain">{{arcanum.system.domains}}</i>
         </div>
       </div>
-      <div class="item-merge item-prop flexlarge">{{{arcanum.system.merge}}}</div>
-      <div class="item-pulse item-prop flexlarge">{{{arcanum.system.pulse}}}</div>
-      <div class="item-dismiss item-prop flexlarge">{{{arcanum.system.dismiss}}}</div>
+      <div class="item-merge item-prop flexlarge">
+        <b>{{{arcanum.system.mergeName}}}</b>
+        {{{arcanum.system.merge}}}
+      </div>
+      <div class="item-pulse item-prop flexlarge">
+        <b>{{{arcanum.system.pulseName}}}</b>
+        {{{arcanum.system.pulse}}}
+      </div>
+      <div class="item-dismiss item-prop flexlarge">
+        <b>{{{arcanum.system.dismissName}}}</b>
+        {{{arcanum.system.dismiss}}}
+      </div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="{{localize "FABULAULTIMA.Delete"}}"><i class="fas fa-trash"></i></a>

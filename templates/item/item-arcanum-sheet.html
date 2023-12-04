@@ -28,17 +28,26 @@
       <br>
       <div class="resource flexrow">
         <label class="resource-label long">{{localize "FABULAULTIMA.Merge"}}</label>
-        {{editor data.merge target="data.merge" rollData=rollData button=true owner=owner editable=editable}}
+        <div style="height: max-content;">
+          <input type="text" name="data.mergeName" value="{{data.mergeName}}"/>
+          {{editor data.merge target="data.merge" rollData=rollData button=true owner=owner editable=editable}}
+        </div>
       </div>
       <br>
       <div class="resource flexrow">
         <label class="resource-label long">{{localize "FABULAULTIMA.Pulse"}}</label>
-        {{editor data.pulse target="data.pulse" rollData=rollData button=true owner=owner editable=editable}}
+        <div style="height: max-content;">
+          <input type="text" name="data.pulseName" value="{{data.pulseName}}"/>
+          {{editor data.pulse target="data.pulse" rollData=rollData button=true owner=owner editable=editable}}
+        </div>
       </div>
       <br>
       <div class="resource flexrow">
         <label class="resource-label long">{{localize "FABULAULTIMA.Dismiss"}}</label>
-        {{editor data.dismiss target="data.dismiss" rollData=rollData button=true owner=owner editable=editable}}
+        <div style="height: max-content;">
+          <input type="text" name="data.dismissName" value="{{data.dismissName}}"/>
+          {{editor data.dismiss target="data.dismiss" rollData=rollData button=true owner=owner editable=editable}}
+        </div>
       </div>
     </div>
 

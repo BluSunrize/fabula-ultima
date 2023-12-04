@@ -295,8 +295,11 @@
       "type": "Arcanum of the ",
       "isSummoned": false,
       "domains": "",
+      "mergeName": "",
       "merge": "",
+      "pulseName": "",
       "pulse": "",
+      "dismissName": "",
       "dismiss": ""
     }
   }
