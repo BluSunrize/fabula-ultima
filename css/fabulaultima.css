@@ -839,6 +839,16 @@ input[readonly] {
   border: 1px solid var(--color-border-light-tertiary);
 }
 
+.fabulaultima .items-list.arcana-list .item-name {
+  -ms-flex: 0 0 230px;
+  flex: 0 0 230px;
+}
+
+.fabulaultima .items-list.arcana-list .item-controls {
+  -ms-flex: 0 0 50px;
+  flex: 0 0 50px;
+}
+
 .fabulaultima .item.arcanum.summoned {
   position: relative;
 }
