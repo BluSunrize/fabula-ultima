@@ -17,5 +17,8 @@
       "systems/fabulaultima/templates/actor/parts/actor-bonds.html",
       "systems/fabulaultima/templates/actor/parts/actor-limits.html",
       "systems/fabulaultima/templates/actor/parts/select-option.html",
+
+      // Chat partials
+      "systems/fabulaultima/templates/chat/parts/diceroll.html",
   ]);
 };
