@@ -7,7 +7,19 @@
     </h4>
 
     <div class="dice-tooltip" style="display: none;">
-      <div class="dice-formula">{{formula}}</div>
+      <div class="dice-formula">
+        <ol class="dice-rolls flexrow">
+          <li class="roll bonus">{{formula.first}}</li>
+          <li class="">+</li>
+          <li class="roll bonus">{{formula.second}}</li>
+          {{#each formula.bonuses as |bonus id|}}
+          {{#if bonus.precisionBonus}}
+          <li class="">+</li>
+          <li class="roll bonus" data-tooltip="{{bonus.name}}">{{bonus.precisionBonus}}</li>
+          {{/if}}
+          {{/each}}
+        </ol>
+      </div>
       {{#if dice.length}}
       <section class="tooltip-part">
         <div class="dice">
@@ -38,9 +50,12 @@
             <li class="roll die d{{die.faces}} {{#if (eq die.total 1)}}min{{/if}} {{#if (eq die.total faces)}}max{{/if}}">
               {{die.total}}
             </li>
-            <li class="roll bonus">
-              + {{bonus}}
-            </li>
+            {{#each bonuses as |bonus id|}}
+            {{#if bonus.damageBonus}}
+            <li class="roll bonus">+</li>
+            <li class="roll bonus" data-tooltip="{{bonus.name}}">{{bonus.damageBonus}}</li>
+            {{/if}}
+            {{/each}}
             {{/with}}
           </ol>
       </section>

@@ -309,23 +309,22 @@ export class FabulaUltimaActor extends Actor {
     let roll = undefined;
 
     if (spell.system.isOffensive) {
-      // game.i18n.localize("FABULAULTIMA.RollPrecisionTest");
-
-      let precisionBonus = Number(spell.system.precisionBonus);
-      let damageBonus = Number(spell.system.damage.bonus);
-      const features = this.items.filter(i => i.type === "feature");
-      for (const feature of features) {
-        const prcBonus = Number(feature.system.passive.magicPrecisionBonus);
-        const damBonus = Number(feature.system.passive.magicDamageBonus);
-        const level = Number(feature.system.level);
-        if (!this.checkFeatureCondition(feature))
-          continue;
-        if (!isNaN(prcBonus) && !isNaN(level))
-          precisionBonus += (prcBonus * level);
-        if (!isNaN(damBonus) && !isNaN(level))
-          damageBonus += (damBonus * level);
-      }
-      let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, precisionBonus);
+      // build a list of all bonuses
+      const bonuses = [
+        {
+          name: game.i18n.localize('FABULAULTIMA.Spell'),
+          precisionBonus: Number(spell.system.precisionBonus),
+          damageBonus: Number(spell.system.damage.bonus),
+        },
+        ...this.collectFeatureData(feature => true, {
+          precisionBonus: 'system.passive.magicPrecisionBonus',
+          damageBonus: 'system.passive.magicDamageBonus',
+        })
+      ];
+      // calculate total bonuses
+      let totalPrecisionBonus = bonuses.reduce((acc, data) => acc+data.precisionBonus, 0);
+      let totalDamageBonus = bonuses.reduce((acc, data) => acc+data.damageBonus, 0);
+      let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, totalPrecisionBonus);
 
       roll = await new Roll(formula, this.getRollData()).roll({ async: true });
       const d = roll.dice;
@@ -336,20 +335,18 @@ export class FabulaUltimaActor extends Actor {
 
       const isFumble = d.every(die => die.total === 1);
       const isCrit = d.every(die => die.total === d[0].total && die.total !== 1 && die.total > 5);
-
-      const first = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.firstAbility]);
-      const second = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.secondAbility]);
-      templateData["formula"] = "【" + first + " + " + second + "】";
-      if (precisionBonus != 0) {
-        templateData["formula"] += " + " + precisionBonus;
-      }
+      templateData["formula"] = {
+        first: game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.firstAbility]),
+        second: game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[spell.system.secondAbility]),
+        bonuses: bonuses,
+      };
       templateData["total"] = roll.total;
       templateData["dice"] = roll.dice;
-      if (spell.system.damage.type != 'none' || damageBonus) {
-        templateData["damage"] = highroll.total + damageBonus;
+      if (spell.system.damage.type != 'none' || totalDamageBonus) {
+        templateData["damage"] = highroll.total + totalDamageBonus;
         templateData["damageFormula"] = {
           die: highroll,
-          bonus: damageBonus,
+          bonuses: bonuses,
         };
         templateData["damageType"] = spell.system.damage.type;
         templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
@@ -385,7 +382,7 @@ export class FabulaUltimaActor extends Actor {
 
   }
 
-  async rollArcanum(arcanum, {showMerge = false, showPulse = false, showDismiss = false}={}) {
+  async rollArcanum(arcanum, { showMerge = false, showPulse = false, showDismiss = false } = {}) {
     const templateData = {
       actor: this,
       arcanum: arcanum,
@@ -431,13 +428,28 @@ export class FabulaUltimaActor extends Actor {
 
     const templateData = {
       actor: this,
-      item: weapon.data,
+      item: weapon,
       type: this.type,
       flavor: flavour
     };
+    const isMelee = weapon.system.type === "melee";
+    // build a list of all bonuses
+    const bonuses = [
+      {
+        name: game.i18n.localize('FABULAULTIMA.WeaponName'),
+        precisionBonus: Number(weapon.system.precisionBonus),
+        damageBonus: Number(weapon.system.damage.bonus),
+      },
+      ...this.collectFeatureData(feature => true, {
+        precisionBonus: isMelee ? 'system.passive.meleePrecisionBonus' : 'system.passive.rangedPrecisionBonus',
+        damageBonus: isMelee ? 'system.passive.meleeDamageBonus' : 'system.passive.rangedDamageBonus',
+      })
+    ];
+    // calculate total bonuses
+    let totalPrecisionBonus = bonuses.reduce((acc, data) => acc+data.precisionBonus, 0);
+    let totalDamageBonus = bonuses.reduce((acc, data) => acc+data.damageBonus, 0);
 
-    let formula = this.getRollFormula(weapon.data);
-
+    let formula = this.getBaseRollFormula(weapon.system.firstAbility, weapon.system.secondAbility, totalPrecisionBonus);
     const roll = await new Roll(formula, this.getRollData()).roll({ async: true });
     const d = roll.dice;
 
@@ -448,15 +460,19 @@ export class FabulaUltimaActor extends Actor {
     const isFumble = d.every(die => die.total === 1);
     const isCrit = d.every(die => die.total === d[0].total && die.total !== 1 && die.total > 5);
 
-    templateData["formula"] = this.getItemFormula(weapon.data);
+    templateData["formula"] = {
+      first: game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[weapon.system.firstAbility]),
+      second: game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[weapon.system.secondAbility]),
+      bonuses: bonuses,
+    };
     templateData["total"] = roll.total;
     templateData["dice"] = roll.dice;
     templateData["damageType"] = weapon.system.damage.type;
     templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
-    templateData["damage"] = highroll.total + this.getWeaponTotalDamage(weapon);
+    templateData["damage"] = highroll.total + totalDamageBonus;
     templateData["damageFormula"] = {
       die: highroll,
-      bonus: this.getWeaponTotalDamage(weapon),
+      bonuses: bonuses,
     };
     templateData["isCritical"] = isCrit;
     templateData["isFumble"] = isFumble;
@@ -483,6 +499,21 @@ export class FabulaUltimaActor extends Actor {
     };
 
     return ChatMessage.create(chatData);
+  }
+
+  collectFeatureData(canApply, mapping) {
+    return this.items.filter(i => i.type === "feature").filter(canApply).filter(this.checkFeatureCondition).map(feature => {
+      const level = Number(feature.system.level);
+      const ret = {
+        name: feature.name,
+        level: level,
+      }
+      for (const [to, from] of Object.entries(mapping)) {
+        const value = Number(from.split('.').reduce((prev, cur) => prev[cur], feature));
+        ret[to] = value * level;
+      }
+      return ret;
+    }).filter(f => !isNaN(f.level) && f.level > 0);
   }
 
   getWeaponTotalDamage(weapon) {
