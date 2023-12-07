@@ -530,7 +530,22 @@ export class FabulaUltimaActorSheet extends ActorSheet {
           this.actor.rollArcanum(item, {showDismiss: true});
           item.update(values);
         }
-      }
+      },
+      {
+        name: 'FABULAULTIMA.DismissNoMessage',
+        icon: '<i class="fa-solid fa-ban"></i>',
+        condition: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          return item.system.isSummoned;
+        },
+        callback: li => {
+          const item = this.actor.items.get(li.data('itemId'));
+          const values = {
+            "system.isSummoned": false
+          };
+          item.update(values);
+        }
+      },
     ], {
       eventName: 'arcanum_menu',
     });

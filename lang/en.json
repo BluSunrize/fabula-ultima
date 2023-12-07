@@ -211,6 +211,7 @@
   "FABULAULTIMA.Merge": "Merge",
   "FABULAULTIMA.Pulse": "Pulse",
   "FABULAULTIMA.Dismiss": "Dismiss",
+  "FABULAULTIMA.DismissNoMessage": "Dismiss (no chat message)",
   "FABULAULTIMA.Summon": "Summon",
 
   "FABULAULTIMA.PlayerTurn": "Player Turn",
