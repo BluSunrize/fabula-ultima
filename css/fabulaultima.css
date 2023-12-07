@@ -870,6 +870,10 @@ input[readonly] {
   font-style: italic;
 }
 
+.dice-tooltip .dice-rolls .roll.bonus {
+  background: none;
+}
+
 @keyframes clippath {
 
   0%,

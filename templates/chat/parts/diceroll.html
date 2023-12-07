@@ -30,6 +30,21 @@
     <h4 class="dice-total {{damageType}}">
       {{damage}} {{damageTypeLoc}}
     </h4>
+
+    <div class="dice-tooltip" style="display: none;">
+      <section class="tooltip-part">
+          <ol class="dice-rolls">
+            {{#with damageFormula}}
+            <li class="roll die d{{die.faces}} {{#if (eq die.total 1)}}min{{/if}} {{#if (eq die.total faces)}}max{{/if}}">
+              {{die.total}}
+            </li>
+            <li class="roll bonus">
+              + {{bonus}}
+            </li>
+            {{/with}}
+          </ol>
+      </section>
+    </div>
     {{/if}}
 
     <div class="card-buttons">

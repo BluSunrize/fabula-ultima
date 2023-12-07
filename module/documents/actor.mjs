@@ -330,8 +330,8 @@ export class FabulaUltimaActor extends Actor {
       roll = await new Roll(formula, this.getRollData()).roll({ async: true });
       const d = roll.dice;
 
-      const maxVal = d.reduce(function (a, b) {
-        return Math.max(a.total, b.total);
+      const highroll = d.reduce((a, b) => {
+        return a.total > b.total ? a : b;
       });
 
       const isFumble = d.every(die => die.total === 1);
@@ -346,7 +346,11 @@ export class FabulaUltimaActor extends Actor {
       templateData["total"] = roll.total;
       templateData["dice"] = roll.dice;
       if (spell.system.damage.type != 'none' || damageBonus) {
-        templateData["damage"] = maxVal + damageBonus;
+        templateData["damage"] = highroll.total + damageBonus;
+        templateData["damageFormula"] = {
+          die: highroll,
+          bonus: damageBonus,
+        };
         templateData["damageType"] = spell.system.damage.type;
         templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
       }
@@ -437,8 +441,8 @@ export class FabulaUltimaActor extends Actor {
     const roll = await new Roll(formula, this.getRollData()).roll({ async: true });
     const d = roll.dice;
 
-    const maxVal = d.reduce(function (a, b) {
-      return Math.max(a.total, b.total);
+    const highroll = d.reduce((a, b) => {
+      return a.total > b.total ? a : b;
     });
 
     const isFumble = d.every(die => die.total === 1);
@@ -449,7 +453,11 @@ export class FabulaUltimaActor extends Actor {
     templateData["dice"] = roll.dice;
     templateData["damageType"] = weapon.system.damage.type;
     templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
-    templateData["damage"] = maxVal + this.getWeaponTotalDamage(weapon);
+    templateData["damage"] = highroll.total + this.getWeaponTotalDamage(weapon);
+    templateData["damageFormula"] = {
+      die: highroll,
+      bonus: this.getWeaponTotalDamage(weapon),
+    };
     templateData["isCritical"] = isCrit;
     templateData["isFumble"] = isFumble;
 
