@@ -244,6 +244,11 @@
   "FABULAULTIMA.GenericItem": "Object",
   "FABULAULTIMA.Description": "Desciption",
 
+  "FABULAULTIMA.Reroll.Button": "Reroll",
+  "FABULAULTIMA.Reroll.First": "First Die",
+  "FABULAULTIMA.Reroll.Second": "Second Die",
+  "FABULAULTIMA.Reroll.Both": "Both Dice",
+
   "FABULAULTIMA.Other": "Other",
   "FABULAULTIMA.LimitType": "Zero Power",
   "FABULAULTIMA.LimitCondition": "Condition",

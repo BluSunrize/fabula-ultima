@@ -2,7 +2,7 @@
   <div class="dice-result">
 
     <h3>{{localize "FABULAULTIMA.PrecisionTest"}}</h3>
-    <h4 class="dice-total {{#if isCritical}}critical{{/if}} {{#if isFumble}}fumble{{/if}} {{#if isHealth}}health-recover{{/if}} {{#if isMana}}mana-recover{{/if}}">
+    <h4 class="precision dice-total {{#if isCritical}}critical{{/if}} {{#if isFumble}}fumble{{/if}} {{#if isHealth}}health-recover{{/if}} {{#if isMana}}mana-recover{{/if}}">
       {{total}} {{#if custom}}{{custom}}{{/if}}
     </h4>
 
@@ -22,16 +22,18 @@
       </div>
       {{#if dice.length}}
       <section class="tooltip-part">
-        <div class="dice">
+        <div class="dice flexrow">
           <ol class="dice-rolls">
-            {{#each dice as |die id|}}
+            {{#each dice as |die dieId|}}
             {{#each die.results as |result id|}}
-            <li class="roll die d{{die.faces}} {{#if result.discarded}}discarded{{/if}} {{#if (eq result.result 1)}}min{{/if}} {{#if (eq result.result die.faces)}}max{{/if}}">
+            <li data-dieId="{{dieId}}"
+                class="roll die d{{die.faces}} {{#if result.discarded}}discarded{{/if}} {{#if (eq result.result 1)}}min{{/if}} {{#if (eq result.result die.faces)}}max{{/if}}">
               {{result.result}}
             </li>
             {{/each}}
             {{/each}}
           </ol>
+          <a class="reroll" data-tooltip="FABULAULTIMA.Reroll.Button"><i class="fa-solid fa-repeat"></i></a>
         </div>
       </section>
       {{/if}}
@@ -39,15 +41,16 @@
 
     {{#if damage}}
     <h3>{{localize "FABULAULTIMA.Damage"}}</h3>
-    <h4 class="dice-total {{damageType}}">
-      {{damage}} {{damageTypeLoc}}
+    <h4 class="damage dice-total {{damageType}}">
+      <span data-bonus="{{damageBonus}}">{{damage}}</span> {{damageTypeLoc}}
     </h4>
 
     <div class="dice-tooltip" style="display: none;">
       <section class="tooltip-part">
           <ol class="dice-rolls">
             {{#with damageFormula}}
-            <li class="roll die d{{die.faces}} {{#if (eq die.total 1)}}min{{/if}} {{#if (eq die.total faces)}}max{{/if}}">
+            <li data-dieId="highroll"
+                class="roll die d{{die.faces}} {{#if (eq die.total 1)}}min{{/if}} {{#if (eq die.total faces)}}max{{/if}}">
               {{die.total}}
             </li>
             {{#each bonuses as |bonus id|}}
@@ -61,10 +64,5 @@
       </section>
     </div>
     {{/if}}
-
-    <div class="card-buttons">
-      <!-- TODO fabula points usage -->
-      <!-- <button data-action="XXX"> -->
-    </div>
   </div>
 </div>

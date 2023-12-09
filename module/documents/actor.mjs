@@ -1,3 +1,5 @@
+import { FabulaRoll } from "../helpers/roll.mjs";
+
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -326,7 +328,7 @@ export class FabulaUltimaActor extends Actor {
       let totalDamageBonus = bonuses.reduce((acc, data) => acc+data.damageBonus, 0);
       let formula = this.getBaseRollFormula(spell.system.firstAbility, spell.system.secondAbility, totalPrecisionBonus);
 
-      roll = await new Roll(formula, this.getRollData()).roll({ async: true });
+      roll = await new FabulaRoll(formula, this.getRollData()).roll({ async: true });
       const d = roll.dice;
 
       const highroll = d.reduce((a, b) => {
@@ -344,6 +346,7 @@ export class FabulaUltimaActor extends Actor {
       templateData["dice"] = roll.dice;
       if (spell.system.damage.type != 'none' || totalDamageBonus) {
         templateData["damage"] = highroll.total + totalDamageBonus;
+        templateData["damageBonus"] = totalDamageBonus;
         templateData["damageFormula"] = {
           die: highroll,
           bonuses: bonuses,
@@ -450,7 +453,7 @@ export class FabulaUltimaActor extends Actor {
     let totalDamageBonus = bonuses.reduce((acc, data) => acc+data.damageBonus, 0);
 
     let formula = this.getBaseRollFormula(weapon.system.firstAbility, weapon.system.secondAbility, totalPrecisionBonus);
-    const roll = await new Roll(formula, this.getRollData()).roll({ async: true });
+    const roll = await new FabulaRoll(formula, this.getRollData()).roll({ async: true });
     const d = roll.dice;
 
     const highroll = d.reduce((a, b) => {
@@ -470,6 +473,7 @@ export class FabulaUltimaActor extends Actor {
     templateData["damageType"] = weapon.system.damage.type;
     templateData["damageTypeLoc"] = game.i18n.localize(CONFIG.FABULAULTIMA.damageTypes[templateData["damageType"]]);
     templateData["damage"] = highroll.total + totalDamageBonus;
+    templateData["damageBonus"] = totalDamageBonus;
     templateData["damageFormula"] = {
       die: highroll,
       bonuses: bonuses,

@@ -8,6 +8,7 @@ import { FabulaUltimaItemSheet } from "./sheets/item-sheet.mjs";
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { FABULAULTIMA } from "./helpers/config.mjs";
 import { FabulaUltimaCombatHud, FabulaUltimaCombatTracker } from "./helpers/combat.js";
+import { FabulaRoll } from "./helpers/roll.mjs";
 import { FabulaUltimaGroupRoll } from "./helpers/groupRoll/groupRoll.mjs";
 import { LongNamePlayerList } from "./sheets/longname-player-list.mjs";
 
@@ -43,6 +44,7 @@ Hooks.once('init', async function() {
   CONFIG.Item.documentClass = FabulaUltimaItem;
   CONFIG.ui.players = LongNamePlayerList;
   CONFIG.ui.combat = FabulaUltimaCombatTracker;
+  CONFIG.Dice.rolls.push(FabulaRoll);
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
@@ -206,6 +208,33 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         return ChatMessage.create(chatData);
       }
     });
+  });
+});
+
+Hooks.on('renderChatMessage', (message, html, messageData) => {
+  new ContextMenu(html, '.dice', [
+    {
+      name: 'FABULAULTIMA.Reroll.First',
+      icon: '<i class="fa-solid fa-dice-one"></i>',
+      callback: () => {FabulaRoll.rerollChatMessage(message, html, 0)},
+    },
+    {
+      name: 'FABULAULTIMA.Reroll.Second',
+      icon: '<i class="fa-solid fa-dice-two"></i>',
+      callback: () => {FabulaRoll.rerollChatMessage(message, html, 1)},
+    },
+    {
+      name: 'FABULAULTIMA.Reroll.Both',
+      icon: '<i class="fa-solid fa-dice"></i>',
+      callback: () => {FabulaRoll.rerollChatMessage(message, html)},
+    },
+  ], {
+    eventName: 'reroll_menu',
+  });
+  html.find('.reroll').click(async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    $(event.currentTarget).parents('.dice').trigger('reroll_menu');
   });
 });
 
