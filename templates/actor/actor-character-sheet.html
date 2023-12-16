@@ -109,15 +109,17 @@
         <section class="stats grid-span-2" style="display: flex;">
           <div class="abilities flexcol">
             <div class="flexrow flex-group-right">
-              <label class="resource-label">Current</label>
-              <label class="resource-label">Max</label>
+              <label class="resource-label">{{localize "FABULAULTIMA.Ability.Base"}}</label>
+              <label class="resource-label">{{localize "FABULAULTIMA.Ability.Current"}}</label>
             </div>
             {{#each system.orderedAbilities as |ability key|}}
             {{> "systems/fabulaultima/templates/actor/parts/actor-ability.html" ability=ability key=key}}
             {{/each}}
           </div>
           <div class="statuses flexcol">
-            <div class="flexrow"></div>
+            <div class="flexrow">
+              <label class="resource-label">{{localize "FABULAULTIMA.StatusEffects"}}</label>
+            </div>
             {{#each system.statuses1 as |status key|}}
             <div class="ability flexrow flex-group-center">
               {{#if status.value}}

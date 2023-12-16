@@ -725,4 +725,19 @@ export class FabulaUltimaActor extends Actor {
     // Process additional NPC data here.
   }
 
+  /** @override */
+  applyActiveEffects() {
+    for (const ability in CONFIG.FABULAULTIMA.abilities) {
+      // make sure these are numbers
+      this.system.abilities[ability].max = Number(this.system.abilities[ability].max);
+      this.system.abilities[ability].value = Number(this.system.abilities[ability].value);
+    }
+    super.applyActiveEffects();
+    for (const ability in CONFIG.FABULAULTIMA.abilities) {
+      // then limit them to d6 - d12
+      this.system.abilities[ability].max = Math.min(Math.max(this.system.abilities[ability].max, 6), 12);
+      this.system.abilities[ability].value = Math.min(Math.max(this.system.abilities[ability].value, 6), 12);
+    }
+  }
+
 }

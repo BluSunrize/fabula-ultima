@@ -103,10 +103,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     context.system.orderedAbilities = {};
 
     for (const k in CONFIG.FABULAULTIMA.abilities) {
-      if (Number(context.system.abilities[k].value) > Number(context.system.abilities[k].max)) {
-        context.system.abilities[k].value = context.system.abilities[k].max;
-      }
-
       context.system.abilities[k].label = game.i18n.localize(CONFIG.FABULAULTIMA.abilities[k]) ?? k;
       context.system.abilities[k].abbrLabel = game.i18n.localize(CONFIG.FABULAULTIMA.abilityAbbreviations[k]) ?? k;
 
@@ -340,32 +336,22 @@ export class FabulaUltimaActorSheet extends ActorSheet {
   }
 
   _updateCharacterAttributes(context) {
-    const maxAbilities = {};
     for (const ability in context.system.abilities) {
-      maxAbilities[ability] = context.system.abilities[ability].max;
+      // cast to number for sanity
+      context.system.abilities[ability].max = Number(context.system.abilities[ability].max);
+      context.system.abilities[ability].value = Number(context.system.abilities[ability].value);
     }
+  }
 
-    for (let status in context.system.statuses1) {
-      const s = context.system.statuses1[status];
-      if (!s.value) continue; 
-
-      for (let affected of s.affects) {
-        maxAbilities[affected] = Math.max((Number(maxAbilities[affected]) - 2), 6) + "";
-      }
+  /** @override */
+  _updateObject(event, formData) {
+    for (const k in CONFIG.FABULAULTIMA.abilities) {
+      let key = `system.abilities.${k}.max`;
+      formData[key] = Number(formData[key]);
+      // if this value was changed by active effects, it will be deleted anyway
+      formData[`system.abilities.${k}.value`] = Number(formData[key]);
     }
-
-    for (let status in context.system.statuses2) {
-      const s = context.system.statuses2[status];
-      if (!s.value) continue;
-
-      for (let affected of s.affects) {
-        maxAbilities[affected] = Math.max((Number(maxAbilities[affected]) - 2), 6) + "";
-      }
-    }
-
-    for (const ability in context.system.abilities) {
-      context.system.abilities[ability].value = maxAbilities[ability];
-    }
+    return super._updateObject(event, formData);
   }
 
   /* -------------------------------------------- */

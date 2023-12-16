@@ -354,6 +354,10 @@
   flex: 0 0 20%;
 }
 
+.fabulaultima .ability .ability-die {
+  max-width: 60px;
+}
+
 .fabulaultima .items-header {
   height: 28px;
   margin: 2px 0;

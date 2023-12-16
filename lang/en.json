@@ -37,6 +37,9 @@
   "FABULAULTIMA.Traits": "Traits",
   "FABULAULTIMA.SpecialRules": "Special Rules",
 
+  "FABULAULTIMA.Ability.Base": "Base",
+  "FABULAULTIMA.Ability.Current": "Current",
+  "FABULAULTIMA.StatusEffects": "Status Effects",
   "FABULAULTIMA.Slow": "Slow",
   "FABULAULTIMA.Dazed": "Dazed",
   "FABULAULTIMA.Weak": "Weak",
