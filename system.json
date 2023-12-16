@@ -1,11 +1,11 @@
 {
   "name": "fabulaultima",
-  "title": "Fabula Ultima (Unofficial)",
-  "description": "The Fabula Ultima system for FoundryVTT!",
-  "version": "0.1.0",
+  "title": "Fabula Ultima",
+  "description": "The Fabula Ultima system for FoundryVTT! Originally created by KzMz, forked for expansion by",
+  "version": "0.6.0",
   "minimumCoreVersion": "0.8.5",
   "compatibleCoreVersion": "0.8.6",
-  "author": "KzMz",
+  "author": "KzMz, BluSurnize",
   "esmodules": ["module/fabulaultima.mjs"],
   "styles": ["css/fabulaultima.css"],
   "scripts": [],
@@ -27,8 +27,8 @@
   "socket": true,
   "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "mana",
-  "url": "This is auto replaced",
-  "manifest": "This is auto replaced",
-  "download": "This is auto replaced",
+  "url": "https://github.com/BluSunrize/fabula-ultima",
+  "manifest": "https://raw.githubusercontent.com/BluSunrize/fabula-ultima/main/system.json",
+  "download": "https://github.com/BluSunrize/fabula-ultima/releases/latest/download/system.zip",
   "license": "LICENSE.txt"
 }
