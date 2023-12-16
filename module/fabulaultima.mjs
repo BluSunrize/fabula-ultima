@@ -234,7 +234,7 @@ Hooks.on('renderChatMessage', (message, html, messageData) => {
   html.find('.reroll').click(async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    $(event.currentTarget).parents('.dice').trigger('reroll_menu');
+    $(event.currentTarget).parents('.dice')[0].dispatchEvent(new Event('reroll_menu', {bubbles: true}));
   });
 });
 

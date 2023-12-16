@@ -484,7 +484,7 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     // which is in turn only performed by the roll button
     html.find('li.arcanum a.rollable').click(async ev => {
       ev.stopPropagation();
-      $(ev.currentTarget).parents('li.arcanum').trigger('arcanum_menu');
+      $(ev.currentTarget).parents('li.arcanum')[0].dispatchEvent(new Event('arcanum_menu', {bubbles: true}));
     });
     new ContextMenu(html, 'li.arcanum', [
       {
