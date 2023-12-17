@@ -6,6 +6,19 @@
         <h3 class="item-name">{{#if prename}}{{prename}}: {{/if}}{{feature.name}}{{#if postname}}: {{postname}}{{/if}}</h3>
     </header>
 
+    <div class="card-info">
+      <div class="flexrow">
+        <label style="font-weight: bold;">{{localize "FABULAULTIMA.Level"}}</label>
+        {{feature.system.level}} / {{feature.system.maxLevel}}
+      </div>
+      {{#if (ne feature.system.cost.amount 0)}}
+      <div class="flexrow">
+        <label style="font-weight: bold;">{{localize "FABULAULTIMA.Cost"}}</label>
+        {{feature.system.cost.amount}} {{feature.system.cost.resourceLoc}}
+      </div>
+      {{/if}}
+    </div>
+
     <div class="card-content">
         {{{feature.system.description}}}
     </div>

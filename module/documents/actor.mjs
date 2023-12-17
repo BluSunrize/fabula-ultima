@@ -228,6 +228,8 @@ export class FabulaUltimaActor extends Actor {
   }
 
   async rollFeature(feature) {
+    feature.system.cost.resourceLoc = game.i18n.localize(CONFIG.FABULAULTIMA.costResources[feature.system.cost.resource]);
+
     const templateData = {
       actor: this,
       feature: feature,
