@@ -20,6 +20,9 @@ export class FabulaUltimaActor extends Actor {
     // Data modifications in this step occur before processing embedded
     // documents or derived data.
     const actorData = this.system;
+
+    // Calculate base HP & MP, so that active effects can modify them
+    this._prepareCharacterData(actorData);
   }
 
   /**
@@ -134,7 +137,6 @@ export class FabulaUltimaActor extends Actor {
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
-    this._prepareCharacterData(actorData);
     this._prepareNpcData(actorData);
   }
 

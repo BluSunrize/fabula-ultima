@@ -94,7 +94,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
   async _prepareCharacterData(context) {
     await this._updateAbilitiesStatusAffinities(context);
     this._updateCharacterLevel(context);
-    this._updateCharacterPoints(context);
     this._updateCharacterAttributes(context);
   }
 
@@ -307,32 +306,6 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     }
 
     context.system.attributes.level.value = level;
-  }
-
-  _updateCharacterPoints(context) {
-    let startingHealth = context.system.abilities.vig.max * 5;
-    startingHealth += context.system.attributes.level.value;
-
-    let startingMind = context.system.abilities.vol.max * 5;
-    startingMind += context.system.attributes.level.value;
-
-    let startingInventory = 6;
-
-    for (let c of context.classes) {
-      startingHealth += Number(c.system.healthBonus);
-      startingMind += Number(c.system.mindBonus);
-      startingInventory += Number(c.system.inventoryBonus);
-
-      for (let f of c.skills) {
-        startingHealth += Number(f.system.passive.hpBonus) * f.system.level;
-        startingMind += Number(f.system.passive.mpBonus) * f.system.level;
-        startingInventory += Number(f.system.passive.ipBonus);
-      }
-    }
-
-    context.system.health.max = startingHealth;
-    context.system.mind.max = startingMind;
-    context.system.inventory.max = startingInventory;
   }
 
   _updateCharacterAttributes(context) {
