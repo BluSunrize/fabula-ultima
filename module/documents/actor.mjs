@@ -20,38 +20,50 @@ export class FabulaUltimaActor extends Actor {
     // Data modifications in this step occur before processing embedded
     // documents or derived data.
     const actorData = this.system;
+  }
 
+  /**
+   * @override
+   * Augment the basic actor data with additional dynamic data. Typically,
+   * you'll want to handle most of your calculated/derived data in this step.
+   * Data calculated in this step should generally not exist in template.json
+   * (such as ability modifiers rather than ability scores) and should be
+   * available both inside and outside of character sheets (such as if an actor
+   * is queried and has a roll executed directly from it).
+   */
+  prepareDerivedData() {
+    const actorData = this.system;
 
-    // Calculate initiative & defenses now, so that active effects can modify them
-    actorData.initiativeBonus = 0;
-    actorData.defense = parseInt(actorData.abilities.dex.value);
-    actorData.magicDefense = parseInt(actorData.abilities.int.value);
+    // Caculate initiative & defenses now, after attributes have been modified by active effects
+    let calculatedInit = 0;
+    let calculatedDef = parseInt(actorData.abilities.dex.value);
+    let calculatedMDef = parseInt(actorData.abilities.int.value);
 
     // bonuses on enemies
     if (actorData.defenseBonus) {
-      actorData.defense += parseInt(actorData.defenseBonus);
+      calculatedDef += parseInt(actorData.defenseBonus);
     }
     if (actorData.magicDefenseBonus) {
-      actorData.magicDefense += parseInt(actorData.magicDefenseBonus);
+      calculatedMDef += parseInt(actorData.magicDefenseBonus);
     }
 
     if (actorData.equipped.armor !== "") {
       const armor = this.items.get(actorData.equipped.armor);
       if (armor) {
-        actorData.initiativeBonus = parseInt(armor.system.initiativeBonus);
+        calculatedInit = parseInt(armor.system.initiativeBonus);
 
         if (armor.system.defenseFormula.includes("@")) {
           const roll = new Roll(armor.system.defenseFormula, this.getRollData()).roll({ async: false });
-          actorData.defense = parseInt(roll.total);
+          calculatedDef = parseInt(roll.total);
         } else {
-          actorData.defense = parseInt(armor.system.defenseFormula);
+          calculatedDef = parseInt(armor.system.defenseFormula);
         }
 
         if (armor.system.magicDefenseFormula.includes("@")) {
           const roll = new Roll(armor.system.magicDefenseFormula, this.getRollData()).roll({ async: false });
-          actorData.magicDefense = parseInt(roll.total);
+          calculatedMDef = parseInt(roll.total);
         } else {
-          actorData.magicDefense = parseInt(armor.system.magicDefenseFormula);
+          calculatedMDef = parseInt(armor.system.magicDefenseFormula);
         }
       }
     }
@@ -61,13 +73,13 @@ export class FabulaUltimaActor extends Actor {
       mainHand = this.items.get(actorData.equipped.mainHand);
       if (mainHand) {
         if (mainHand.system.quality) {
-          actorData.initiativeBonus += parseInt(mainHand.system.quality.initiativeBonus);
-          actorData.defense += parseInt(mainHand.system.quality.defenseBonus);
-          actorData.magicDefense += parseInt(mainHand.system.quality.magicDefenseBonus);
+          calculatedInit += parseInt(mainHand.system.quality.initiativeBonus);
+          calculatedDef += parseInt(mainHand.system.quality.defenseBonus);
+          calculatedMDef += parseInt(mainHand.system.quality.magicDefenseBonus);
         }
 
-        actorData.defense += parseInt(mainHand.system.defenseBonus);
-        actorData.magicDefense += parseInt(mainHand.system.magicDefenseBonus);
+        calculatedDef += parseInt(mainHand.system.defenseBonus);
+        calculatedMDef += parseInt(mainHand.system.magicDefenseBonus);
       }
     }
 
@@ -75,13 +87,13 @@ export class FabulaUltimaActor extends Actor {
       const offHand = this.items.get(actorData.equipped.offHand);
       if (offHand && mainHand && mainHand.id !== offHand.id) {
         if (offHand.system.quality) {
-          actorData.initiativeBonus += parseInt(offHand.system.quality.initiativeBonus);
-          actorData.defense += parseInt(offHand.system.quality.defenseBonus);
-          actorData.magicDefense += parseInt(offHand.system.quality.magicDefenseBonus);
+          calculatedInit += parseInt(offHand.system.quality.initiativeBonus);
+          calculatedDef += parseInt(offHand.system.quality.defenseBonus);
+          calculatedMDef += parseInt(offHand.system.quality.magicDefenseBonus);
         }
 
-        actorData.defense += parseInt(offHand.system.defenseBonus);
-        actorData.magicDefense += parseInt(offHand.system.magicDefenseBonus);
+        calculatedDef += parseInt(offHand.system.defenseBonus);
+        calculatedMDef += parseInt(offHand.system.magicDefenseBonus);
       }
     }
 
@@ -103,26 +115,22 @@ export class FabulaUltimaActor extends Actor {
         mdefBonus = Number(item.system.passive.magicDefenseBonus) * level;
       }
       if (!isNaN(initBonus))
-        actorData.initiativeBonus += initBonus;
+        calculatedInit += initBonus;
       if (!isNaN(defBonus))
-        actorData.defense += defBonus;
+        calculatedDef += defBonus;
       if (!isNaN(mdefBonus))
-        actorData.magicDefense += mdefBonus;
+        calculatedMDef += mdefBonus;
     }
 
-  }
+    // If these values were not overriden by active effects, apply them to the character
+    if (!this.overrides?.system?.initiativeBonus)
+      actorData.initiativeBonus = calculatedInit;
+    if (!this.overrides?.system?.defense)
+      actorData.defense = calculatedDef;
+    if (!this.overrides?.system?.magicDefense)
+      actorData.magicDefense = calculatedMDef;
 
-  /**
-   * @override
-   * Augment the basic actor data with additional dynamic data. Typically,
-   * you'll want to handle most of your calculated/derived data in this step.
-   * Data calculated in this step should generally not exist in template.json
-   * (such as ability modifiers rather than ability scores) and should be
-   * available both inside and outside of character sheets (such as if an actor
-   * is queried and has a roll executed directly from it).
-   */
-  prepareDerivedData() {
-    const actorData = this.system;
+
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
