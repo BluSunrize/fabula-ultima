@@ -3,8 +3,11 @@
   "title": "Fabula Ultima",
   "description": "The Fabula Ultima system for FoundryVTT! Originally created by KzMz, forked for expansion by",
   "version": "0.6.0",
-  "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "0.8.6",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10",
+    "maximum": "11"
+  },
   "author": "KzMz, BluSurnize",
   "esmodules": ["module/fabulaultima.mjs"],
   "styles": ["css/fabulaultima.css"],
