@@ -176,7 +176,7 @@ Hooks.on('getSceneControlButtons', async function (buttons) {
 
 Hooks.on('renderSidebarTab', (app, html, data) => {
   html.find('.chat-control-icon').click(async (event) => {
-    const actor = canvas.tokens.controlled[0]?.token || game.user.character;
+    const actor = canvas.tokens.controlled[0]?.actor || game.user.character;
     if(!actor){
         ui.notifications.warn('You need to select a token to roll dice with');
         return;
