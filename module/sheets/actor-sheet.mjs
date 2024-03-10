@@ -574,12 +574,14 @@ export class FabulaUltimaActorSheet extends ActorSheet {
     html.find('.status-checkbox').click(async ev => {
       ev.preventDefault();
       const checkbox = $(ev.currentTarget);
-      const status = checkbox.attr('name');
+      const name = checkbox.attr('name').split('.').at(-1);
+      const effect = CONFIG.statusEffects.find(e => e.id === `fabulaultima.${name}`);
 
-      const values = {};
-      values[status] = checkbox[0].checked;
-
-      await this.actor.update(values);
+      for (let token of this.actor.getActiveTokens(true)) {
+        await token.document.toggleActiveEffect(effect, {
+          'active': checkbox[0].checked
+        });
+      }
     });
 
     // Active Effect management
