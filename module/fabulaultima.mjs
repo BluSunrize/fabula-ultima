@@ -16,7 +16,7 @@ import { LongNamePlayerList } from "./sheets/longname-player-list.mjs";
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 
-Hooks.once('init', async function() {
+Hooks.once('init', async function () {
 
   // Add utility classes to the global game object so that they're more easily
   // accessible in global contexts.
@@ -45,6 +45,35 @@ Hooks.once('init', async function() {
   CONFIG.ui.players = LongNamePlayerList;
   CONFIG.ui.combat = FabulaUltimaCombatTracker;
   CONFIG.Dice.rolls.push(FabulaRoll);
+
+  CONFIG.statusEffects.unshift(
+    buildStatusEffect('slow', [
+      { 'key': 'system.status.slow', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.dex.value', 'mode': 2, 'value': '-2' }
+    ]),
+    buildStatusEffect('dazed', [
+      { 'key': 'system.status.dazed', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.int.value', 'mode': 2, 'value': '-2' }
+    ]),
+    buildStatusEffect('weak', [
+      { 'key': 'system.status.weak', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.vig.value', 'mode': 2, 'value': '-2' }
+    ]),
+    buildStatusEffect('shaken', [
+      { 'key': 'system.status.slow', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.vol.value', 'mode': 2, 'value': '-2' }
+    ]),
+    buildStatusEffect('enraged', [
+      { 'key': 'system.status.enraged', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.dex.value', 'mode': 2, 'value': '-2' },
+      { 'key': 'system.abilities.dex.value', 'mode': 2, 'value': '-2' }
+    ]),
+    buildStatusEffect('poisoned', [
+      { 'key': 'system.status.poisoned', 'mode': 5, 'value': '1' },
+      { 'key': 'system.abilities.vig.value', 'mode': 2, 'value': '-2' },
+      { 'key': 'system.abilities.vol.value', 'mode': 2, 'value': '-2' }
+    ]),
+  );
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
@@ -86,7 +115,7 @@ Hooks.once('init', async function() {
 /* -------------------------------------------- */
 
 // If you need to add Handlebars helpers, here are a few useful examples:
-Handlebars.registerHelper('concat', function() {
+Handlebars.registerHelper('concat', function () {
   var outStr = '';
   for (var arg in arguments) {
     if (typeof arguments[arg] != 'object') {
@@ -96,7 +125,7 @@ Handlebars.registerHelper('concat', function() {
   return outStr;
 });
 
-Handlebars.registerHelper('toLowerCase', function(str) {
+Handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
 
@@ -109,12 +138,12 @@ Handlebars.registerHelper('option', function (value, label, selectedValue) {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 
-Hooks.once("ready", async function() {
+Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
   // if (game.combat)
-    // game.fabulaultima.combatHud.addToScreen();
+  // game.fabulaultima.combatHud.addToScreen();
 });
 
 Hooks.once("socketlib.ready", () => {
@@ -124,7 +153,7 @@ Hooks.once("socketlib.ready", () => {
   FabulaUltimaCombatHud.ready();
 });
 
-Hooks.on("createCombat", async function() {
+Hooks.on("createCombat", async function () {
   // game.fabulaultima.combatHud.addToScreen();
 });
 
@@ -141,9 +170,9 @@ Hooks.on("deleteCombatant", async function () {
 });
 
 Hooks.on("updateActor", async function (actor, changes, options, userId) {
-  if(userId != game.userId)
+  if (userId != game.userId)
     return;
-  if(changes.system?.health) {
+  if (changes.system?.health) {
     const effectIconPath = 'icons/svg/hazard.svg';
     const effectLabel = 'Crisis';
     const effectOrigin = 'crisis';
@@ -167,7 +196,7 @@ Hooks.on("updateActor", async function (actor, changes, options, userId) {
   }
 
   // if (game.combat)
-    // game.fabulaultima.combatHud.update();
+  // game.fabulaultima.combatHud.update();
 });
 
 Hooks.on('getSceneControlButtons', async function (buttons) {
@@ -177,9 +206,9 @@ Hooks.on('getSceneControlButtons', async function (buttons) {
 Hooks.on('renderSidebarTab', (app, html, data) => {
   html.find('.chat-control-icon').click(async (event) => {
     const actor = canvas.tokens.controlled[0]?.actor || game.user.character;
-    if(!actor){
-        ui.notifications.warn('You need to select a token to roll dice with');
-        return;
+    if (!actor) {
+      ui.notifications.warn('You need to select a token to roll dice with');
+      return;
     }
     Dialog.prompt({
       title: game.i18n.localize('FABULAULTIMA.DiceRoller'),
@@ -191,7 +220,7 @@ Hooks.on('renderSidebarTab', (app, html, data) => {
         let second = html.find('#second-ability').val();
         let bonus = html.find('#bonus').val();
         const roll = await new Roll(
-          actor.getBaseRollFormula(first, second, bonus), 
+          actor.getBaseRollFormula(first, second, bonus),
           actor.getRollData()
         ).roll({ async: true });
         const chatData = {
@@ -216,17 +245,17 @@ Hooks.on('renderChatMessage', (message, html, messageData) => {
     {
       name: 'FABULAULTIMA.Reroll.First',
       icon: '<i class="fa-solid fa-dice-one"></i>',
-      callback: () => {FabulaRoll.rerollChatMessage(message, html, 0)},
+      callback: () => { FabulaRoll.rerollChatMessage(message, html, 0) },
     },
     {
       name: 'FABULAULTIMA.Reroll.Second',
       icon: '<i class="fa-solid fa-dice-two"></i>',
-      callback: () => {FabulaRoll.rerollChatMessage(message, html, 1)},
+      callback: () => { FabulaRoll.rerollChatMessage(message, html, 1) },
     },
     {
       name: 'FABULAULTIMA.Reroll.Both',
       icon: '<i class="fa-solid fa-dice"></i>',
-      callback: () => {FabulaRoll.rerollChatMessage(message, html)},
+      callback: () => { FabulaRoll.rerollChatMessage(message, html) },
     },
   ], {
     eventName: 'reroll_menu',
@@ -234,7 +263,7 @@ Hooks.on('renderChatMessage', (message, html, messageData) => {
   html.find('.reroll').click(async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    $(event.currentTarget).parents('.dice')[0].dispatchEvent(new Event('reroll_menu', {bubbles: true}));
+    $(event.currentTarget).parents('.dice')[0].dispatchEvent(new Event('reroll_menu', { bubbles: true }));
   });
 });
 
@@ -286,4 +315,16 @@ function rollItemMacro(itemName) {
 
   // Trigger the item roll
   return item.roll();
+}
+
+function buildStatusEffect(name, changes) {
+  return {
+    'id': `fabulaultima.${name}`,
+    'flags': {
+      'core': { 'statusId': `fabulaultima.${name}` }
+    },
+    'label': `FABULAULTIMA.${name[0].toUpperCase() + name.slice(1)}`,
+    'icon': `systems/fabulaultima/icons/${name}.svg`,
+    'changes': changes
+  };
 }
