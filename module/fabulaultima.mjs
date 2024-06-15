@@ -60,7 +60,7 @@ Hooks.once('init', async function () {
       { 'key': 'system.abilities.vig.value', 'mode': 2, 'value': '-2' }
     ]),
     buildStatusEffect('shaken', [
-      { 'key': 'system.status.slow', 'mode': 5, 'value': '1' },
+      { 'key': 'system.status.shaken', 'mode': 5, 'value': '1' },
       { 'key': 'system.abilities.vol.value', 'mode': 2, 'value': '-2' }
     ]),
     buildStatusEffect('enraged', [
